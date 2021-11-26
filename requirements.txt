@@ -1,0 +1,2 @@
+Django           # high-level Web framework that encourages rapid development and clean, pragmatic design.
+django_dramatiq  # Django app that integrates with Dramatiq
