@@ -1,9 +1,9 @@
-.. http://docutils.sourceforge.net/docs/user/rst/quickref.html
+﻿.. http://docutils.sourceforge.net/docs/user/rst/quickref.html
 
 django_dramatiq_charts 📊
 =========================
 
-Charts for django_dramatic
+Charts for django_dramatiq
 
 .. image:: https://img.shields.io/pypi/dm/django_dramatiq_charts.svg?style=social
 
