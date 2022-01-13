@@ -46,4 +46,4 @@ def timeline_chart(request):
 
 def update_cache(request):
     cache.delete_many(['actor_choice_list', 'queue_choice_list'])
-    return redirect(request.GET.get('redirect'))
+    return redirect(request.META.get('HTTP_REFERER'))

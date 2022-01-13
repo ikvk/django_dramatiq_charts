@@ -13,23 +13,29 @@ from .settings import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_d
 
 def _get_actor_choices() -> ((str, str),):
     key = 'actor_choice_list'
-    result = cache.get(key)
+    result = ''
+    if get_cache_form_data_min():
+        result = cache.get(key)
     if not result:
         result = (('', '<Actor>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('actor_name', flat=True).distinct().order_by('actor_name')
         )
-        cache.set(key, result, get_cache_form_data_min())
+        if get_cache_form_data_min():
+            cache.set(key, result, get_cache_form_data_min())
     return result
 
 
 def _get_queue_choices() -> ((str, str),):
     key = 'queue_choice_list'
-    result = cache.get(key)
+    result = ''
+    if get_cache_form_data_min():
+        result = cache.get(key)
     if not result:
         result = (('', '<Queue>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('queue_name', flat=True).distinct().order_by('queue_name')
         )
-        cache.set(key, result, get_cache_form_data_min())
+        if get_cache_form_data_min():
+            cache.set(key, result, get_cache_form_data_min())
     return result
 
 
@@ -155,7 +161,8 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
             "dates": json.dumps(dates),
             'chart_height': json.dumps(200 + len(categories) * 25),
             'chart_title': json.dumps(chart_title),
-            "empty_qs": False
+            "empty_qs": False,
+            "cache_enabled": get_cache_form_data_min(),
         }
 
 
@@ -168,7 +175,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         queue = cd.get('queue')
         status = cd.get('status')
         dt_format = "%Y-%m-%d %H:%M:%S"
-        task_qs = models.Task.tasks.using('default').filter(
+        task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
         ).order_by('updated_at')
         timeline_chart_qs = get_timeline_chart_qs()
@@ -207,4 +214,5 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
             "chart_data": json.dumps(chart_data),
             'chart_title': json.dumps(chart_title),
             "empty_qs": False,
+            "cache_enabled": get_cache_form_data_min(),
         }

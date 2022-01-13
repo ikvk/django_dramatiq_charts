@@ -2,3 +2,4 @@ include LICENSE
 include MANIFEST.in
 include README.rst
 recursive-include django_dramatiq_charts/templates *.html
+recursive-include django_dramatiq_charts/static *.css

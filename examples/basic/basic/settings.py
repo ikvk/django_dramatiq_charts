@@ -146,9 +146,9 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
-
+DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_MIN = 1000
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

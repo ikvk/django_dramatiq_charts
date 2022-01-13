@@ -27,9 +27,11 @@
 {% block content %}
     <form method="GET" style="text-align: center; margin-bottom: 0.38em;">
         {{ form }}
-        <button type="submit" style="background-color: steelblue; color: white">Build chart</button>&nbsp;
+        <button type="submit" class="button-form">Build chart</button>&nbsp;
         <a href="."><i>Reset</i></a>&nbsp;
-        <a href="{% url 'update_cache' %}?redirect={{ request.get_full_path|urlencode }}"><i>Update cache</i></a>
+        {% if cache_enabled %}
+            <a href="{% url 'update_cache' %}"><i>Update cache</i></a>
+        {% endif %}
     </form>
     {% if empty_qs %}
         <p style="font-size: 2em; text-align: center">🔍 there is no data for the specified criteria</p>
