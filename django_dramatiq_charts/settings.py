@@ -10,7 +10,7 @@ def get_perm_fn():
 
 
 def get_plotly_lib():
-    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_PLOTLY_LIB", 'https://cdn.plot.ly/plotly-2.6.3.min.js')
+    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_PLOTLY_LIB", 'https://cdn.plot.ly/plotly-2.8.3.min.js')
 
 
 def get_load_chart_qs():
@@ -19,3 +19,7 @@ def get_load_chart_qs():
 
 def get_timeline_chart_qs():
     return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_TIMELINE_CHART_QS", None)
+
+
+def get_cache_form_data_min():
+    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_MIN", 12 * 60)

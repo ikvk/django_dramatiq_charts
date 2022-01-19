@@ -16,6 +16,7 @@ setuptools.setup(
     name='django-dramatiq-charts',
     version=get_version('django_dramatiq_charts'),
     packages=setuptools.find_packages(exclude=['tests']),
+    include_package_data=True,
     url='https://github.com/ikvk/django_dramatiq_charts',
     license='Apache-2.0',
     long_description=long_description,
