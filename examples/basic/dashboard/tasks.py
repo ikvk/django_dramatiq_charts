@@ -11,5 +11,3 @@ def process_job(job_id):
 
     job.status = Job.STATUS_DONE
     job.save()
-    print('done: ', job_id)
-

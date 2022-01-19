@@ -10,7 +10,7 @@ def get_perm_fn():
 
 
 def get_plotly_lib():
-    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_PLOTLY_LIB", 'https://cdn.plot.ly/plotly-latest.min.js')
+    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_PLOTLY_LIB", 'https://cdn.plot.ly/plotly-2.8.3.min.js')
 
 
 def get_load_chart_qs():

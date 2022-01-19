@@ -31,11 +31,11 @@
         {% endif %}
     </form>
     {% if empty_qs %}
-        <p style="font-size: 2em; text-align: center">🔍 there is no data for the specified criteria</p>
+        <p style="font-size: 1.7em; text-align: center">🔍 there is no data for the specified criteria</p>
     {% elif chart_data %}
         <div id='chart'></div>
     {% else %}
-        <p style="font-size: 2em; text-align: center">🖦 select build criteria</p>
+        <p style="font-size: 1.7em; text-align: center">🖦 select build criteria</p>
     {% endif %}
 {% endblock %}
 
@@ -184,7 +184,8 @@
 
         let drag_layer = document.getElementsByClassName('nsewdrag')[0];    // cursor object
 
-        chart.on('plotly_click', function (eventdata) {    // uncovering of tasks within a single actor
+        // uncovering of tasks within a single actor
+        chart.on('plotly_click', function (eventdata) {
             let current_actor = eventdata.points[0].data.customdata['actor'];
             let mode = eventdata.points[0].data.customdata['mode'];
             if (mode === 'overlay') {
@@ -208,7 +209,7 @@
                             unique_statuses_single.push(task['group']);
                         }
                     }
-                })
+                });
 
                 let layout_single = Object.assign({}, layout, {
                     title: {
@@ -225,19 +226,19 @@
                         ticktext: [current_actor],
                     },
                     height: heightCalculator(data_single.length, 15, 350),
-                })
+                });
                 Plotly.react(chart, data_single, layout_single);
             }
             else {
                 Plotly.react(chart, data, layout);
             }
         })
-        .on('plotly_hover', function () {    // the cursor changes when hovering over an interval
+        .on('plotly_hover', function () {
+            // the cursor changes when hovering over an interval
             drag_layer.style.cursor = 'pointer';
         })
         .on('plotly_unhover', function () {
             drag_layer.style.cursor = '';
         });
-
     </script>
 {% endblock %}

@@ -34,11 +34,11 @@
         {% endif %}
     </form>
     {% if empty_qs %}
-        <p style="font-size: 2em; text-align: center">🔍 there is no data for the specified criteria</p>
+        <p style="font-size: 1.7em; text-align: center">🔍 there is no data for the specified criteria</p>
     {% elif categories %}
         <div id='chart'></div>
     {% else %}
-        <p style="font-size: 2em; text-align: center">🖦 select build criteria</p>
+        <p style="font-size: 1.7em; text-align: center">🖦 select build criteria</p>
     {% endif %}
 {% endblock %}
 
@@ -51,7 +51,7 @@
             return z.map(function (value, j) {
                 return ` Actor: ${y[i]} <br>` +
                        ` Datetime: ${x[j]} <br>` +
-                       ` Count: ${value} `
+                       ` Count: ${value} `;
             });
         });
         let data = [
@@ -61,9 +61,6 @@
                 y: y,
                 type: 'heatmap',
                 hoverongaps: false,
-                colorbar: {
-                    dtick: 1,
-                },
                 colorscale: [
                     [0, '#a3d2db'],  // 69c3e8 a3d2db
                     [1, '#01434b'],  // e31919 01434b

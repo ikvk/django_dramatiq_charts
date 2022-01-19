@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.core.cache import cache
 
 from .forms import DramatiqLoadChartForm, DramatiqTimelineChartForm
-from .settings import get_perm_fn, get_plotly_lib
+from .settings import get_perm_fn, get_plotly_lib, get_cache_form_data_min
 
 
 def load_chart(request):
@@ -20,7 +20,8 @@ def load_chart(request):
         form = DramatiqLoadChartForm()
     response.update({
         'form': form,
-        'plotly_lib': get_plotly_lib()
+        'plotly_lib': get_plotly_lib(),
+        'cache_enabled': get_cache_form_data_min(),
     })
     return render(request, 'django_dramatiq_charts/load_chart.html', response)
 
@@ -40,6 +41,7 @@ def timeline_chart(request):
     response.update({
         'form': form,
         'plotly_lib': get_plotly_lib(),
+        'cache_enabled': get_cache_form_data_min(),
     })
     return render(request, 'django_dramatiq_charts/timeline_chart.html', response)
 

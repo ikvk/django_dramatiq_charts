@@ -83,7 +83,7 @@ class DramatiqBasicChartForm(forms.Form):
 class DramatiqLoadChartForm(DramatiqBasicChartForm):
     time_interval = forms.IntegerField(label='Interval sec', initial=10, min_value=1, max_value=60 * 60 * 24,
                                        widget=forms.TextInput(
-                                           attrs={'style': 'width: 4rem;', 'maxlength': '5'}
+                                           attrs={'style': 'width: 3rem;', 'maxlength': '5'}
                                        ))
 
     field_order = ['start_date', 'end_date', 'time_interval']
@@ -162,7 +162,6 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
             'chart_height': json.dumps(200 + len(categories) * 25),
             'chart_title': json.dumps(chart_title),
             "empty_qs": False,
-            "cache_enabled": get_cache_form_data_min(),
         }
 
 
@@ -214,5 +213,4 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
             "chart_data": json.dumps(chart_data),
             'chart_title': json.dumps(chart_title),
             "empty_qs": False,
-            "cache_enabled": get_cache_form_data_min(),
         }
