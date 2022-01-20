@@ -35,9 +35,17 @@ Guide
 Configuration
 ^^^^^^^^^^^^^
 
-* Add views functions *load_chart*, *timeline_chart* to your urls.
+1. Add lib views to your urls:
 
-* Configure lib parameters in your project settings file:
+.. code-block:: python
+
+    from django_dramatiq_charts.views import load_chart, timeline_chart, update_cache
+
+    path('django_dramatiq_charts/load_chart/', load_chart, name='load_chart'),
+    path('django_dramatiq_charts/timeline_chart/', timeline_chart, name='timeline_chart'),
+    path('django_dramatiq_charts/update_cache/', update_cache, name='update_cache'),
+
+2. Configure lib parameters in your project settings file:
 
 .. list-table::
    :header-rows: 1
@@ -64,7 +72,7 @@ Configuration
 Load chart
 ^^^^^^^^^^
 
-Shows the number of simultaneously executed actors in each time interval
+**Shows the number of simultaneously executed actors in each time interval**
 
 .. image:: docs/load_chart.png
 
@@ -73,11 +81,11 @@ Tasks running more than one day are not counted (assumed to be an error).
 Timeline chart
 ^^^^^^^^^^^^^^
 
-1. Tasks grouped by actor name.
+**1. Tasks grouped by actor name.**
 
 .. figure:: docs/timeline_chart_overlay.png
 
-2. Click on the group to see all the actors of the group. Esc or double click for go back.
+**2. Click on the group to see all the actors of the group. Esc or double click for go back.**
 
 .. figure:: docs/timeline_chart_group.png
 

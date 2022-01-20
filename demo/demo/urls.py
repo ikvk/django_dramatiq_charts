@@ -20,8 +20,8 @@ from django.conf.urls import include, url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('dramatiq_load_chart/', load_chart, name='load_chart'),
-    path('dramatiq_timeline_chart/', timeline_chart, name='timeline_chart'),
-    path('update_cache/', update_cache, name='update_cache'),
+    path('django_dramatiq_charts/load_chart/', load_chart, name='load_chart'),
+    path('django_dramatiq_charts/timeline_chart/', timeline_chart, name='timeline_chart'),
+    path('django_dramatiq_charts/update_cache/', update_cache, name='update_cache'),
     url(r'^', include('dashboard.urls')),
 ]
