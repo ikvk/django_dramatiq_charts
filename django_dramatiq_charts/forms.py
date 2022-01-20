@@ -49,9 +49,9 @@ def _four_hours_ago() -> str:
     return (datetime.datetime.now() - datetime.timedelta(hours=4)).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _task_duration(start: datetime.datetime, end: datetime.datetime) -> int:
-    """Duration in seconds"""
-    return round((end - start).total_seconds() * 1000)
+def _task_duration_ms(start: datetime.datetime, end: datetime.datetime) -> int:
+    """Duration in milliseconds"""
+    return int((end - start).total_seconds() * 1000)
 
 
 class DramatiqBasicChartForm(forms.Form):
@@ -202,7 +202,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
             chart_data.append({
                 'actor': task.actor_name,
                 'status': task.status,
-                'duration': _task_duration(task.created_at, task.updated_at),
+                'duration': _task_duration_ms(task.created_at, task.updated_at),
                 'start': task.created_at.strftime(dt_format + ".%f"),
                 'end': task.updated_at.strftime(dt_format + ".%f"),
             })
