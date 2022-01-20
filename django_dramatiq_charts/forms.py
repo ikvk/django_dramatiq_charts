@@ -50,7 +50,7 @@ def _four_hours_ago() -> str:
 
 
 def _task_duration(start: datetime.datetime, end: datetime.datetime) -> int:
-    """Duration in milliseconds"""
+    """Duration in seconds"""
     return round((end - start).total_seconds() * 1000)
 
 
