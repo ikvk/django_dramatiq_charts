@@ -6,36 +6,23 @@
 
 {% block extrahead %}
     <script src='{{ plotly_lib }}'></script>
-    <style>
-        body {
-            padding-right: 0.6em;
-            padding-left: 0.6em;
-        }
-        input, select {
-            margin: 0 1em 0.38em 0.3em;
-        }
-        .errorlist {
-            color: red;
-            list-style: none;
-        }
-    </style>
 {% endblock %}
 
 {% block content %}
-    <form method="GET" style="text-align: center; margin-bottom: 0.38em;">
+    <form method="GET" class="filter_form">
         {{ form }}
-        <button type="submit" class="button-form">Build chart</button>&nbsp;
-        <a href="."><i>Reset</i></a>&nbsp;
+        <button type="submit">Build chart</button>
+        <a href="."><i>Reset</i></a>
         {% if cache_enabled %}
             <a href="{% url 'update_cache' %}"><i>Update cache</i></a>
         {% endif %}
     </form>
     {% if empty_qs %}
-        <p style="font-size: 1.7em; text-align: center">🔍 there is no data for the specified criteria</p>
+        <p class="msg">🔍 there is no data for the specified criteria</p>
     {% elif chart_data %}
         <div id='chart'></div>
     {% else %}
-        <p style="font-size: 1.7em; text-align: center">🖦 select build criteria</p>
+        <p class="msg">🖦 select build criteria</p>
     {% endif %}
 {% endblock %}
 
@@ -86,8 +73,8 @@
             return height;
         }
 
-        let chart_data = {{ chart_data|safe|default:'[]' }};
-        let filter_data = {{ filter_data|safe|default:'[]' }};
+        let chart_data = ({{ chart_data|safe|default:'[]' }});
+        let filter_data = ({{ filter_data|safe|default:'[]' }});
         let data = [];
         let unique_actors = new Set();
         let unique_statuses = [];

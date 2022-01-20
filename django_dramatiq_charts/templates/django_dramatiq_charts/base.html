@@ -12,8 +12,8 @@
         <meta name='description' content='{% block description %}{% endblock %}}'/>
         <meta name="robots" content="{% block robots %}none{% endblock %}">
     {% endblock %}
-    {% block extrahead %}{% endblock %}
     <link rel="stylesheet" href="{% static 'django_dramatiq_charts/base.css' %}">
+    {% block extrahead %}{% endblock %}
 </head>
 <body>
 {% block content %}

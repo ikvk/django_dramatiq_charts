@@ -5,12 +5,15 @@ from django.core.cache import cache
 from .forms import DramatiqLoadChartForm, DramatiqTimelineChartForm
 from .settings import get_perm_fn, get_plotly_lib, get_cache_form_data_min
 
+_err_get_only = '<h3>GET only</h3>'
+_err_access_denied = '<h3>Access denied, <a href="/">go home 🏠</a></h3>'
+
 
 def load_chart(request):
     if request.method != "GET":
-        return HttpResponse('<h3>GET only</h3>')
+        return HttpResponse(_err_get_only)
     if not (get_perm_fn())(request):
-        return HttpResponse('<h3>Access denied, <a href="/">go home 🏠</a></h3>')
+        return HttpResponse(_err_access_denied)
     response = {}
     if request.GET:
         form = DramatiqLoadChartForm(request.GET)
@@ -28,16 +31,16 @@ def load_chart(request):
 
 def timeline_chart(request):
     if request.method != "GET":
-        return HttpResponse('<h3>GET only</h3>')
+        return HttpResponse(_err_get_only)
     if not (get_perm_fn())(request):
-        return HttpResponse('<h3>Access denied, <a href="/">go home 🏠</a></h3>')
+        return HttpResponse(_err_access_denied)
     response = {}
     if request.GET:
         form = DramatiqTimelineChartForm(request.GET)
         if form.is_valid():
             response.update(form.get_chart_data())
     else:
-        form = DramatiqLoadChartForm()
+        form = DramatiqTimelineChartForm()
     response.update({
         'form': form,
         'plotly_lib': get_plotly_lib(),

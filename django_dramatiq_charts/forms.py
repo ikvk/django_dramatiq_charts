@@ -12,30 +12,32 @@ from .settings import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_d
 
 
 def _get_actor_choices() -> ((str, str),):
-    key = 'actor_choice_list'
-    result = ''
-    if get_cache_form_data_min():
+    key = 'django_dramatiq_charts__actor_choice_list'
+    cache_form_data_min = get_cache_form_data_min()
+    result = tuple()
+    if cache_form_data_min:
         result = cache.get(key)
     if not result:
         result = (('', '<Actor>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('actor_name', flat=True).distinct().order_by('actor_name')
         )
-        if get_cache_form_data_min():
-            cache.set(key, result, get_cache_form_data_min())
+        if cache_form_data_min:
+            cache.set(key, result, cache_form_data_min)
     return result
 
 
 def _get_queue_choices() -> ((str, str),):
-    key = 'queue_choice_list'
-    result = ''
-    if get_cache_form_data_min():
+    key = 'django_dramatiq_charts__queue_choice_list'
+    cache_form_data_min = get_cache_form_data_min()
+    result = tuple()
+    if cache_form_data_min:
         result = cache.get(key)
     if not result:
         result = (('', '<Queue>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('queue_name', flat=True).distinct().order_by('queue_name')
         )
-        if get_cache_form_data_min():
-            cache.set(key, result, get_cache_form_data_min())
+        if cache_form_data_min:
+            cache.set(key, result, cache_form_data_min)
     return result
 
 
@@ -54,10 +56,10 @@ def _task_duration(start: datetime.datetime, end: datetime.datetime) -> int:
 
 class DramatiqBasicChartForm(forms.Form):
     start_date = forms.DateTimeField(label='Period start', initial=_four_hours_ago, widget=forms.DateTimeInput(
-        attrs={'placeholder': 'Period start', 'style': 'width: 8rem;', 'maxlength': '16'}
+        attrs={'placeholder': 'Period start', 'style': 'width: 9.5rem;', 'maxlength': '19'}
     ))
     end_date = forms.DateTimeField(label='Period end', initial=_now_dt, widget=forms.DateTimeInput(
-        attrs={'placeholder': 'Period end', 'style': 'width: 8rem;', 'maxlength': '16'}
+        attrs={'placeholder': 'Period end', 'style': 'width: 9.5rem;', 'maxlength': '19'}
     ))
     queue = forms.ChoiceField(choices=_get_queue_choices, required=False, label='Queue')
     actor = forms.ChoiceField(choices=_get_actor_choices, required=False, label='Actor')
@@ -81,10 +83,10 @@ class DramatiqBasicChartForm(forms.Form):
 
 
 class DramatiqLoadChartForm(DramatiqBasicChartForm):
-    time_interval = forms.IntegerField(label='Interval sec', initial=10, min_value=1, max_value=60 * 60 * 24,
-                                       widget=forms.TextInput(
-                                           attrs={'style': 'width: 3rem;', 'maxlength': '5'}
-                                       ))
+    time_interval = forms.IntegerField(
+        label='Interval sec', initial=10, min_value=1, max_value=60 * 60 * 24,
+        widget=forms.TextInput(attrs={'style': 'width: 2rem;', 'maxlength': '5'})
+    )
 
     field_order = ['start_date', 'end_date', 'time_interval']
 
