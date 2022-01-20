@@ -42,6 +42,9 @@ Configuration
 .. list-table::
    :header-rows: 1
 
+   * - Parameter
+     - Description
+     - Default
    * - DJANGO_DRAMATIQ_CHARTS_PERM_FN
      - users with access to the charts
      - def fn(request): return request.user.is_superuser
