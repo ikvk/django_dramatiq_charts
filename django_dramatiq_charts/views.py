@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.core.cache import cache
 
+from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
 from .forms import DramatiqLoadChartForm, DramatiqTimelineChartForm
 from .settings import get_perm_fn, get_plotly_lib, get_cache_form_data_min
 
@@ -49,6 +50,6 @@ def timeline_chart(request):
     return render(request, 'django_dramatiq_charts/timeline_chart.html', response)
 
 
-def update_cache(request):
-    cache.delete_many(['actor_choice_list', 'queue_choice_list'])
+def clean_cache(request):
+    cache.delete_many((CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES))
     return redirect(request.META.get('HTTP_REFERER'))

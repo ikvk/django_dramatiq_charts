@@ -6,39 +6,43 @@ from operator import itemgetter
 
 from django import forms
 from django.core.cache import cache
-
 from django_dramatiq import models
+
+from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
 from .settings import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_min
 
 
-def _get_actor_choices() -> ((str, str),):
-    key = 'django_dramatiq_charts__actor_choice_list'
+def get_actor_choices() -> ((str, str),):
     cache_form_data_min = get_cache_form_data_min()
     result = tuple()
     if cache_form_data_min:
-        result = cache.get(key)
+        result = cache.get(CACHE_KEY_ACTOR_CHOICES)
     if not result:
-        result = (('', '<Actor>'),) + tuple(
+        result = (('', '<all actors>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('actor_name', flat=True).distinct().order_by('actor_name')
         )
         if cache_form_data_min:
-            cache.set(key, result, cache_form_data_min)
+            cache.set(CACHE_KEY_ACTOR_CHOICES, result, cache_form_data_min)
     return result
 
 
-def _get_queue_choices() -> ((str, str),):
-    key = 'django_dramatiq_charts__queue_choice_list'
+def get_queue_choices() -> ((str, str),):
     cache_form_data_min = get_cache_form_data_min()
     result = tuple()
     if cache_form_data_min:
-        result = cache.get(key)
+        result = cache.get(CACHE_KEY_QUEUE_CHOICES)
     if not result:
-        result = (('', '<Queue>'),) + tuple(
+        result = (('', '<all queues>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('queue_name', flat=True).distinct().order_by('queue_name')
         )
         if cache_form_data_min:
-            cache.set(key, result, cache_form_data_min)
+            cache.set(CACHE_KEY_QUEUE_CHOICES, result, cache_form_data_min)
     return result
+
+
+def get_dt_delta_ms(start: datetime.datetime, end: datetime.datetime) -> int:
+    """Duration in milliseconds"""
+    return int((end - start).total_seconds() * 1000)
 
 
 def _now_dt() -> str:
@@ -49,11 +53,6 @@ def _four_hours_ago() -> str:
     return (datetime.datetime.now() - datetime.timedelta(hours=4)).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _task_duration(start: datetime.datetime, end: datetime.datetime) -> int:
-    """Duration in seconds"""
-    return round((end - start).total_seconds() * 1000)
-
-
 class DramatiqBasicChartForm(forms.Form):
     start_date = forms.DateTimeField(label='Period start', initial=_four_hours_ago, widget=forms.DateTimeInput(
         attrs={'placeholder': 'Period start', 'style': 'width: 9.5rem;', 'maxlength': '19'}
@@ -61,9 +60,9 @@ class DramatiqBasicChartForm(forms.Form):
     end_date = forms.DateTimeField(label='Period end', initial=_now_dt, widget=forms.DateTimeInput(
         attrs={'placeholder': 'Period end', 'style': 'width: 9.5rem;', 'maxlength': '19'}
     ))
-    queue = forms.ChoiceField(choices=_get_queue_choices, required=False, label='Queue')
-    actor = forms.ChoiceField(choices=_get_actor_choices, required=False, label='Actor')
-    status = forms.ChoiceField(choices=[('', '<All statuses>')] + models.Task.STATUSES, required=False,
+    queue = forms.ChoiceField(choices=get_queue_choices, required=False, label='Queue')
+    actor = forms.ChoiceField(choices=get_actor_choices, required=False, label='Actor')
+    status = forms.ChoiceField(choices=[('', '<all statuses>')] + models.Task.STATUSES, required=False,
                                initial=models.Task.STATUS_DONE, label='Status')
 
     def clean(self):
@@ -74,11 +73,11 @@ class DramatiqBasicChartForm(forms.Form):
         if start_date and end_date:
             if start_date >= end_date:
                 raise forms.ValidationError('The period start date is greater than or equal to the period end date')
-            if (end_date - start_date) > datetime.timedelta(days=3):
-                raise forms.ValidationError('The maximum date range is 3 days')
-        if time_interval:
-            if (end_date - start_date).total_seconds() < time_interval * 2:
-                raise forms.ValidationError('Time interval is too long')
+            if (end_date - start_date) > datetime.timedelta(days=7):
+                raise forms.ValidationError('The maximum date range is 7 days')
+            if time_interval:
+                if (end_date - start_date).total_seconds() < time_interval * 2:
+                    raise forms.ValidationError('Time interval is too long')
         return cleaned_data
 
 
@@ -156,7 +155,7 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
                 for i, _ in enumerate(categories):
                     working_actors_count[i].append(None)
         chart_title = ', '.join(
-            '{}: {}'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
+            '<b>{}: {}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
         return {
             "categories": json.dumps(categories),
             "working_actors_count": json.dumps(working_actors_count),
@@ -175,7 +174,8 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         actor = cd.get('actor')
         queue = cd.get('queue')
         status = cd.get('status')
-        dt_format = "%Y-%m-%d %H:%M:%S"
+        dt_format_sec = "%Y-%m-%d %H:%M:%S"
+        dt_format_ms = "%Y-%m-%d %H:%M:%S .%f"
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
         ).order_by('updated_at')
@@ -191,8 +191,8 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         if not task_qs.count():
             return {"empty_qs": True}
         filter_data = {
-            'start_date': start_date.strftime(dt_format),
-            'end_date': end_date.strftime(dt_format),
+            'start_date': start_date.strftime(dt_format_sec),
+            'end_date': end_date.strftime(dt_format_sec),
             'actor': actor,
             'queue': queue,
             'status': status,
@@ -202,14 +202,14 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
             chart_data.append({
                 'actor': task.actor_name,
                 'status': task.status,
-                'duration': _task_duration(task.created_at, task.updated_at),
-                'start': task.created_at.strftime(dt_format + ".%f"),
-                'end': task.updated_at.strftime(dt_format + ".%f"),
+                'duration': get_dt_delta_ms(task.created_at, task.updated_at),
+                'start': task.created_at.strftime(dt_format_ms),
+                'end': task.updated_at.strftime(dt_format_ms),
             })
         chart_data.sort(key=itemgetter('end'), reverse=True)
         chart_data.sort(key=itemgetter('actor'), reverse=True)
         chart_title = ', '.join(
-            '{}: {}'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
+            '<b>{}: {}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
         return {
             "filter_data": json.dumps(filter_data),
             "chart_data": json.dumps(chart_data),

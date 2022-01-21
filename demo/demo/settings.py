@@ -88,12 +88,10 @@ DATABASES = {
 }
 
 # Tasks
-
-DRAMATIQ_REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
     "OPTIONS": {
-        "connection_pool": redis.ConnectionPool.from_url(DRAMATIQ_REDIS_URL),
+        "connection_pool": redis.ConnectionPool.from_url(os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")),
     },
     "MIDDLEWARE": [
         "dramatiq.middleware.AgeLimit",
