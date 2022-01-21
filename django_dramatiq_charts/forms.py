@@ -201,6 +201,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         for task in task_qs:
             chart_data.append({
                 'actor': task.actor_name,
+                'queue': task.queue_name,
                 'status': task.status,
                 'duration': get_dt_delta_ms(task.created_at, task.updated_at),
                 'start': task.created_at.strftime(dt_format_ms),
