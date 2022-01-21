@@ -14,7 +14,7 @@
         <button type="submit">Build chart</button>
         <a href="."><i>Reset</i></a>
         {% if cache_enabled %}
-            <a href="{% url 'update_cache' %}"><i>Update cache</i></a>
+            <a href="{% url 'ddc_clean_cache' %}"><i>Update cache</i></a>
         {% endif %}
     </form>
     {% if empty_qs %}

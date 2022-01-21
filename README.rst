@@ -39,11 +39,11 @@ Configuration
 
 .. code-block:: python
 
-    from django_dramatiq_charts.views import load_chart, timeline_chart, update_cache
+    from django_dramatiq_charts.views import load_chart, timeline_chart, clean_cache
 
-    path('django_dramatiq_charts/load_chart/', load_chart, name='load_chart'),
-    path('django_dramatiq_charts/timeline_chart/', timeline_chart, name='timeline_chart'),
-    path('django_dramatiq_charts/update_cache/', update_cache, name='update_cache'),
+    path('django_dramatiq_charts/load_chart/', load_chart, name='ddc_load_chart'),
+    path('django_dramatiq_charts/timeline_chart/', timeline_chart, name='ddc_timeline_chart'),
+    path('django_dramatiq_charts/clean_cache/', clean_cache, name='ddc_clean_cache'),
 
 2. Configure lib parameters in your project settings file:
 

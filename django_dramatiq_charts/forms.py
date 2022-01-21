@@ -6,39 +6,43 @@ from operator import itemgetter
 
 from django import forms
 from django.core.cache import cache
-
 from django_dramatiq import models
+
+from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
 from .settings import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_min
 
 
-def _get_actor_choices() -> ((str, str),):
-    key = 'django_dramatiq_charts__actor_choice_list'
+def get_actor_choices() -> ((str, str),):
     cache_form_data_min = get_cache_form_data_min()
     result = tuple()
     if cache_form_data_min:
-        result = cache.get(key)
+        result = cache.get(CACHE_KEY_ACTOR_CHOICES)
     if not result:
         result = (('', '<Actor>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('actor_name', flat=True).distinct().order_by('actor_name')
         )
         if cache_form_data_min:
-            cache.set(key, result, cache_form_data_min)
+            cache.set(CACHE_KEY_ACTOR_CHOICES, result, cache_form_data_min)
     return result
 
 
-def _get_queue_choices() -> ((str, str),):
-    key = 'django_dramatiq_charts__queue_choice_list'
+def get_queue_choices() -> ((str, str),):
     cache_form_data_min = get_cache_form_data_min()
     result = tuple()
     if cache_form_data_min:
-        result = cache.get(key)
+        result = cache.get(CACHE_KEY_QUEUE_CHOICES)
     if not result:
         result = (('', '<Queue>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('queue_name', flat=True).distinct().order_by('queue_name')
         )
         if cache_form_data_min:
-            cache.set(key, result, cache_form_data_min)
+            cache.set(CACHE_KEY_QUEUE_CHOICES, result, cache_form_data_min)
     return result
+
+
+def get_dt_delta_ms(start: datetime.datetime, end: datetime.datetime) -> int:
+    """Duration in milliseconds"""
+    return int((end - start).total_seconds() * 1000)
 
 
 def _now_dt() -> str:
@@ -49,11 +53,6 @@ def _four_hours_ago() -> str:
     return (datetime.datetime.now() - datetime.timedelta(hours=4)).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def _task_duration_ms(start: datetime.datetime, end: datetime.datetime) -> int:
-    """Duration in milliseconds"""
-    return int((end - start).total_seconds() * 1000)
-
-
 class DramatiqBasicChartForm(forms.Form):
     start_date = forms.DateTimeField(label='Period start', initial=_four_hours_ago, widget=forms.DateTimeInput(
         attrs={'placeholder': 'Period start', 'style': 'width: 9.5rem;', 'maxlength': '19'}
@@ -61,8 +60,8 @@ class DramatiqBasicChartForm(forms.Form):
     end_date = forms.DateTimeField(label='Period end', initial=_now_dt, widget=forms.DateTimeInput(
         attrs={'placeholder': 'Period end', 'style': 'width: 9.5rem;', 'maxlength': '19'}
     ))
-    queue = forms.ChoiceField(choices=_get_queue_choices, required=False, label='Queue')
-    actor = forms.ChoiceField(choices=_get_actor_choices, required=False, label='Actor')
+    queue = forms.ChoiceField(choices=get_queue_choices, required=False, label='Queue')
+    actor = forms.ChoiceField(choices=get_actor_choices, required=False, label='Actor')
     status = forms.ChoiceField(choices=[('', '<All statuses>')] + models.Task.STATUSES, required=False,
                                initial=models.Task.STATUS_DONE, label='Status')
 
@@ -202,7 +201,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
             chart_data.append({
                 'actor': task.actor_name,
                 'status': task.status,
-                'duration': _task_duration_ms(task.created_at, task.updated_at),
+                'duration': get_dt_delta_ms(task.created_at, task.updated_at),
                 'start': task.created_at.strftime(dt_format + ".%f"),
                 'end': task.updated_at.strftime(dt_format + ".%f"),
             })
