@@ -31,12 +31,18 @@
         function statusColor(status) {
             // color definition for status
             switch (status) {
-                case 'enqueued': return 'rgb(126,59,243)';
-                case 'delayed': return 'rgb(232,157,17)';
-                case 'running': return 'rgb(72,139,222)';
-                case 'failed': return 'rgb(239,77,50)';
-                case 'done': return 'rgb(30,190,54)';
-                case 'skipped': return 'rgb(100, 100, 100)';
+                case 'enqueued':
+                    return 'rgb(126,59,243)';
+                case 'delayed':
+                    return 'rgb(232,157,17)';
+                case 'running':
+                    return 'rgb(72,139,222)';
+                case 'failed':
+                    return 'rgb(239,77,50)';
+                case 'done':
+                    return 'rgb(30,190,54)';
+                case 'skipped':
+                    return 'rgb(100, 100, 100)';
             }
         }
 
@@ -96,10 +102,10 @@
             let color = statusColor(task['status']);
             let duration = msToString(task['duration']);
             let text = `Task: ${task['actor']}<br>` +
-                       `Status: <span style="color:${color}">${task['status']}</span><br>` +
-                       `Duration: ${duration}<br>` +
-                       `Start: ${task['start'].slice(0, -3)}<br>` +
-                       `End: ${task['end'].slice(0, -3)}`;
+                `Status: <span style="color:${color}">${task['status']}</span><br>` +
+                `Duration: ${duration}<br>` +
+                `Start: ${task['start'].slice(0, -3)}<br>` +
+                `End: ${task['end'].slice(0, -3)}`;
             data.push({
                 x: [x_start, x_start, x_end, x_end, x_start],
                 y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5],
@@ -139,7 +145,7 @@
 
         let layout = {
             title: {
-                text: '<b>' + ({{ chart_title|safe|default:"''" }}) + '</b>',
+                text: {{ chart_title|safe|default:"''" }},
                 font: {
                     size: 15,
                 }
@@ -200,7 +206,7 @@
 
                 let layout_single = Object.assign({}, layout, {
                     title: {
-                        text: {{ chart_title|safe|default:"''" }} + `<br><br>Tasks for ${current_actor}`,
+                        text: {{ chart_title|safe|default:"''" }} +`<br><br>Tasks for ${current_actor}`,
                         font: {
                             size: 15,
                         }
@@ -215,16 +221,13 @@
                     height: heightCalculator(data_single.length, 15, 350),
                 });
                 Plotly.react(chart, data_single, layout_single);
-            }
-            else {
+            } else {
                 Plotly.react(chart, data, layout);
             }
-        })
-        .on('plotly_hover', function () {
+        }).on('plotly_hover', function () {
             // the cursor changes when hovering over an interval
             drag_layer.style.cursor = 'pointer';
-        })
-        .on('plotly_unhover', function () {
+        }).on('plotly_unhover', function () {
             drag_layer.style.cursor = '';
         });
     </script>

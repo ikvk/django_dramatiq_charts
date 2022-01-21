@@ -55,7 +55,7 @@
         ];
         let layout = {
             title: {
-                text: '<b>' + ({{ chart_title|safe|default:"''" }}) + '</b>',
+                text: {{ chart_title|safe|default:"''" }},
                 font: {
                     size: 15,
                 }
