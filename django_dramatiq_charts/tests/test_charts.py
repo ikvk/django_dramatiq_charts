@@ -5,9 +5,11 @@ from django_dramatiq.models import Task
 from django.test import TransactionTestCase
 from django_dramatiq_charts.forms import DramatiqLoadChartForm, DramatiqTimelineChartForm
 
+_fixture_dataset = 'fixtures/dataset.json'
+
 
 class TestDramatiqLoadChart(TransactionTestCase):
-    fixtures = ['dataset']
+    fixtures = [_fixture_dataset]
 
     def test_valid_form(self):
         # tasks in the database
@@ -150,7 +152,7 @@ class TestDramatiqLoadChart(TransactionTestCase):
 
 
 class TestDramatiqTimelineChart(TransactionTestCase):
-    fixtures = ['dataset']
+    fixtures = [_fixture_dataset]
 
     def test_valid_form(self):
         # tasks in the database
@@ -190,7 +192,6 @@ class TestDramatiqTimelineChart(TransactionTestCase):
         self.assertFalse(filter_data['actor'])
         self.assertFalse(filter_data['queue'])
         self.assertFalse(filter_data['status'])
-
 
     def test_invalid_forms(self):
         # end date is greater than start date
