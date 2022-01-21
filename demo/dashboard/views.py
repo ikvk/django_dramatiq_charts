@@ -1,4 +1,3 @@
-import dramatiq
 from django.shortcuts import redirect, render
 
 from .models import Job
@@ -11,5 +10,5 @@ def index(request):
         process_job.send(job.pk)
         return redirect("index")
     return render(request, "dashboard/index.html", {
-        "jobs": Job.objects.order_by("-created_at").all(),
+        "jobs": Job.objects.all().order_by("-created_at"),
     })

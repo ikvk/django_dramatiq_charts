@@ -73,11 +73,11 @@ class DramatiqBasicChartForm(forms.Form):
         if start_date and end_date:
             if start_date >= end_date:
                 raise forms.ValidationError('The period start date is greater than or equal to the period end date')
-            if (end_date - start_date) > datetime.timedelta(days=3):
-                raise forms.ValidationError('The maximum date range is 3 days')
-        if time_interval:
-            if (end_date - start_date).total_seconds() < time_interval * 2:
-                raise forms.ValidationError('Time interval is too long')
+            if (end_date - start_date) > datetime.timedelta(days=7):
+                raise forms.ValidationError('The maximum date range is 7 days')
+            if time_interval:
+                if (end_date - start_date).total_seconds() < time_interval * 2:
+                    raise forms.ValidationError('Time interval is too long')
         return cleaned_data
 
 
@@ -155,7 +155,7 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
                 for i, _ in enumerate(categories):
                     working_actors_count[i].append(None)
         chart_title = ', '.join(
-            '{}: {}'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
+            '<b>{}: {}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
         return {
             "categories": json.dumps(categories),
             "working_actors_count": json.dumps(working_actors_count),
@@ -209,7 +209,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         chart_data.sort(key=itemgetter('end'), reverse=True)
         chart_data.sort(key=itemgetter('actor'), reverse=True)
         chart_title = ', '.join(
-            '{}: {}'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
+            '<b>{}: {}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
         return {
             "filter_data": json.dumps(filter_data),
             "chart_data": json.dumps(chart_data),
