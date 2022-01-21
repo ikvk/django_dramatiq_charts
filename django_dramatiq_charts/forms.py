@@ -18,7 +18,7 @@ def get_actor_choices() -> ((str, str),):
     if cache_form_data_min:
         result = cache.get(CACHE_KEY_ACTOR_CHOICES)
     if not result:
-        result = (('', '<Actor>'),) + tuple(
+        result = (('', '<all actors>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('actor_name', flat=True).distinct().order_by('actor_name')
         )
         if cache_form_data_min:
@@ -32,7 +32,7 @@ def get_queue_choices() -> ((str, str),):
     if cache_form_data_min:
         result = cache.get(CACHE_KEY_QUEUE_CHOICES)
     if not result:
-        result = (('', '<Queue>'),) + tuple(
+        result = (('', '<all queues>'),) + tuple(
             (i, i) for i in models.Task.tasks.values_list('queue_name', flat=True).distinct().order_by('queue_name')
         )
         if cache_form_data_min:
@@ -62,7 +62,7 @@ class DramatiqBasicChartForm(forms.Form):
     ))
     queue = forms.ChoiceField(choices=get_queue_choices, required=False, label='Queue')
     actor = forms.ChoiceField(choices=get_actor_choices, required=False, label='Actor')
-    status = forms.ChoiceField(choices=[('', '<All statuses>')] + models.Task.STATUSES, required=False,
+    status = forms.ChoiceField(choices=[('', '<all statuses>')] + models.Task.STATUSES, required=False,
                                initial=models.Task.STATUS_DONE, label='Status')
 
     def clean(self):
@@ -174,7 +174,8 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         actor = cd.get('actor')
         queue = cd.get('queue')
         status = cd.get('status')
-        dt_format = "%Y-%m-%d %H:%M:%S"
+        dt_format_sec = "%Y-%m-%d %H:%M:%S"
+        dt_format_ms = "%Y-%m-%d %H:%M:%S .%f"
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
         ).order_by('updated_at')
@@ -190,8 +191,8 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         if not task_qs.count():
             return {"empty_qs": True}
         filter_data = {
-            'start_date': start_date.strftime(dt_format),
-            'end_date': end_date.strftime(dt_format),
+            'start_date': start_date.strftime(dt_format_sec),
+            'end_date': end_date.strftime(dt_format_sec),
             'actor': actor,
             'queue': queue,
             'status': status,
@@ -202,8 +203,8 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
                 'actor': task.actor_name,
                 'status': task.status,
                 'duration': get_dt_delta_ms(task.created_at, task.updated_at),
-                'start': task.created_at.strftime(dt_format + ".%f"),
-                'end': task.updated_at.strftime(dt_format + ".%f"),
+                'start': task.created_at.strftime(dt_format_ms),
+                'end': task.updated_at.strftime(dt_format_ms),
             })
         chart_data.sort(key=itemgetter('end'), reverse=True)
         chart_data.sort(key=itemgetter('actor'), reverse=True)
