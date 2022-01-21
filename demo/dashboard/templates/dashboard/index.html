@@ -5,6 +5,25 @@
     <title>django_dramatiq example</title>
 </head>
 <body>
+
+<hr>
+<h2>Charts</h2>
+<h3><a href="{% url 'load_chart' %}" target="_blank">load_chart</a></h3>
+<h3><a href="{% url 'timeline_chart' %}" target="_blank">timeline_chart</a></h3>
+
+<hr>
+<h2>Submit a job</h2>
+<form action="" method="POST">
+    {% csrf_token %}
+    <label>Job type
+        <select name="type">
+            <option value="slow">Slow</option>
+            <option value="fast">Fast</option>
+        </select>
+    </label>
+    <button type="submit">Submit</button>
+</form>
+
 <h2>Jobs</h2>
 {% if not jobs %}
     <p>There are no known jobs.</p>
@@ -24,24 +43,6 @@
         {% endfor %}
     </table>
 {% endif %}
-
-<hr>
-<h2>Submit a job</h2>
-<form action="" method="POST">
-    {% csrf_token %}
-    <label>Job type
-        <select name="type">
-            <option value="slow">Slow</option>
-            <option value="fast">Fast</option>
-        </select>
-    </label>
-    <button type="submit">Submit</button>
-</form>
-
-<hr>
-<h2>Charts</h2>
-<h3><a href="{% url 'load_chart' %}" target="_blank">load_chart</a></h3>
-<h3><a href="{% url 'timeline_chart' %}" target="_blank">timeline_chart</a></h3>
 
 </body>
 </html>
