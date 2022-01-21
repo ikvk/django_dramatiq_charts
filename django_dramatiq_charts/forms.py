@@ -155,7 +155,7 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
                 for i, _ in enumerate(categories):
                     working_actors_count[i].append(None)
         chart_title = ', '.join(
-            '<b>{}: {}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
+            '{}: {}'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
         return {
             "categories": json.dumps(categories),
             "working_actors_count": json.dumps(working_actors_count),
@@ -209,7 +209,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         chart_data.sort(key=itemgetter('end'), reverse=True)
         chart_data.sort(key=itemgetter('actor'), reverse=True)
         chart_title = ', '.join(
-            '<b>{}: {}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
+            '{}: {}'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
         return {
             "filter_data": json.dumps(filter_data),
             "chart_data": json.dumps(chart_data),

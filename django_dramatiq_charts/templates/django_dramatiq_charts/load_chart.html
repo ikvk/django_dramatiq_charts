@@ -34,8 +34,8 @@
         let text = z.map(function (z, i) {
             return z.map(function (value, j) {
                 return ` Actor: ${y[i]} <br>` +
-                       ` Datetime: ${x[j]} <br>` +
-                       ` Count: ${value} `;
+                    ` Datetime: ${x[j]} <br>` +
+                    ` Count: ${value} `;
             });
         });
         let data = [
@@ -55,7 +55,7 @@
         ];
         let layout = {
             title: {
-                text: {{ chart_title|safe|default:"''" }},
+                text: '<b>' + ({{ chart_title|safe|default:"''" }}) + '</b>',
                 font: {
                     size: 15,
                 }
