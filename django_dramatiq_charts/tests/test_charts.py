@@ -61,13 +61,13 @@ class TestDramatiqLoadChart(TransactionTestCase):
         self.assertEqual(['The period start date is greater than or equal to the period end date'],
                          form.non_field_errors())
 
-        # maximum date range is greater than 3 days
+        # maximum date range is greater than 7 days
         form = DramatiqLoadChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 1, 0, 0),
-            end_date=datetime(2022, 1, 5, 1, 0, 0),
+            end_date=datetime(2022, 1, 9, 1, 0, 0),
         ))
         self.assertFalse(form.is_valid())
-        self.assertEqual(['The maximum date range is 3 days'], form.non_field_errors())
+        self.assertEqual(['The maximum date range is 7 days'], form.non_field_errors())
 
         # time interval is too long
         form = DramatiqLoadChartForm(data=dict(
@@ -203,13 +203,13 @@ class TestDramatiqTimelineChart(TransactionTestCase):
         self.assertEqual(['The period start date is greater than or equal to the period end date'],
                          form.non_field_errors())
 
-        # maximum date range is greater than 3 days
+        # maximum date range is greater than 7 days
         form = DramatiqTimelineChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 0, 0, 0),
-            end_date=datetime(2022, 1, 5, 0, 0, 0),
+            end_date=datetime(2022, 1, 9, 0, 0, 0),
         ))
         self.assertFalse(form.is_valid())
-        self.assertEqual(['The maximum date range is 3 days'], form.non_field_errors())
+        self.assertEqual(['The maximum date range is 7 days'], form.non_field_errors())
 
     def test_filters(self):
         # queue
