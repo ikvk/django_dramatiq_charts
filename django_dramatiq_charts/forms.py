@@ -155,7 +155,7 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
                 for i, _ in enumerate(categories):
                     working_actors_count[i].append(None)
         chart_title = ', '.join(
-            '<b>{}: {}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
+            '{}: <b>{}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value)
         return {
             "categories": json.dumps(categories),
             "working_actors_count": json.dumps(working_actors_count),
@@ -175,7 +175,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         queue = cd.get('queue')
         status = cd.get('status')
         dt_format_sec = "%Y-%m-%d %H:%M:%S"
-        dt_format_ms = "%Y-%m-%d %H:%M:%S .%f"
+        dt_format_ms = "%Y-%m-%d %H:%M:%S.%f"
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
         ).order_by('updated_at')
@@ -209,7 +209,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         chart_data.sort(key=itemgetter('end'), reverse=True)
         chart_data.sort(key=itemgetter('actor'), reverse=True)
         chart_title = ', '.join(
-            '<b>{}: {}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value != '')
+            '{}: <b>{}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value)
         return {
             "filter_data": json.dumps(filter_data),
             "chart_data": json.dumps(chart_data),
