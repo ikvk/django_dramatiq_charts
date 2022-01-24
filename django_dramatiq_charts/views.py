@@ -4,7 +4,7 @@ from django.core.cache import cache
 
 from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
 from .forms import DramatiqLoadChartForm, DramatiqTimelineChartForm
-from .settings import get_perm_fn, get_plotly_lib, get_cache_form_data_min
+from .config import get_perm_fn, get_cache_form_data_sec
 
 _err_get_only = '<h3>GET only</h3>'
 _err_access_denied = '<h3>Access denied, <a href="/">go home 🏠</a></h3>'
@@ -24,8 +24,7 @@ def load_chart(request):
         form = DramatiqLoadChartForm()
     response.update({
         'form': form,
-        'plotly_lib': get_plotly_lib(),
-        'cache_enabled': get_cache_form_data_min(),
+        'cache_enabled': get_cache_form_data_sec(),
     })
     return render(request, 'django_dramatiq_charts/load_chart.html', response)
 
@@ -44,8 +43,7 @@ def timeline_chart(request):
         form = DramatiqTimelineChartForm()
     response.update({
         'form': form,
-        'plotly_lib': get_plotly_lib(),
-        'cache_enabled': get_cache_form_data_min(),
+        'cache_enabled': get_cache_form_data_sec(),
     })
     return render(request, 'django_dramatiq_charts/timeline_chart.html', response)
 

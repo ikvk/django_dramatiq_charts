@@ -4,10 +4,6 @@
 
 {% block description %}Dramatiq task load chart{% endblock %}
 
-{% block extrahead %}
-    <script src='{{ plotly_lib }}'></script>
-{% endblock %}
-
 {% block content %}
     <form method="GET" class="filter_form">
         {{ form }}
@@ -28,6 +24,19 @@
 
 {% block extrabottom %}
     <script>
+        $("#id_status").select2({
+            placeholder: "All statuses",
+            multiple: true,
+        });
+        $("#id_actor").select2({
+            placeholder: "All actors",
+            multiple: true,
+        });
+        $("#id_queue").select2({
+            placeholder: "All queues",
+            multiple: true,
+        });
+
         let z = ({{ working_actors_count|safe|default:'[]' }});
         let x = ({{ dates|safe|default:'[]' }});
         let y = ({{ categories|safe|default:'[]' }});
