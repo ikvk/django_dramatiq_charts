@@ -25,8 +25,8 @@ Installation
 
 Requirements:
 
-* Django 1.11+
-* dramatiq 0.18+
+* Django 2.2+
+* dramatiq 1.11+
 * django-dramatiq 0.10.0+
 
 Guide

@@ -70,7 +70,7 @@
         };
         let categories = ({{ categories|safe|default:'[]' }});
         if (categories.length !== 0) {
-            Plotly.newPlot('chart', data, layout);
+            Plotly.newPlot('chart', data, layout, {responsive: true});
         }
     </script>
 {% endblock %}
