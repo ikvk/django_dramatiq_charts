@@ -94,7 +94,7 @@
         let unique_statuses = [];
         let bargap = 1.25;    // indent between intervals in fractions of the interval width by y
         let chart = document.getElementById('chart');
-        let chart_display_mode = 'overlay';    //graph display mode
+        let chart_display_mode = 'overlay';
 
         chart_data.forEach(function (task) {
             unique_actors.add(task['actor']);
@@ -230,7 +230,7 @@
             }
         }).on('plotly_hover', function () {
             // the cursor changes when hovering over an interval
-            chart_display_mode === 'overlay' ? drag_layer.style.cursor = 'pointer' : drag_layer.style.cursor = 'default';
+            drag_layer.style.cursor = chart_display_mode === 'overlay' ? 'pointer' : 'default';
         }).on('plotly_unhover', function () {
             drag_layer.style.cursor = '';
         });
