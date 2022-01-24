@@ -207,7 +207,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
                 'start': task.created_at.strftime(dt_format_ms),
                 'end': task.updated_at.strftime(dt_format_ms),
             })
-        chart_data.sort(key=itemgetter('end'), reverse=True)
+        chart_data.sort(key=itemgetter('start'), reverse=True)
         chart_data.sort(key=itemgetter('actor'), reverse=True)
         chart_title = ', '.join(
             '{}: <b>{}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value)

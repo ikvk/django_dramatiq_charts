@@ -47,7 +47,7 @@
         }
 
         function msToString(milliseconds) {
-            // converting milliseconds -> hours: minutes: seconds: milliseconds
+            // converting milliseconds to '{hours}h {minutes}m {seconds}s {milliseconds}ms'
             if (milliseconds <= 0) {
                 return 'undefined';
             }
@@ -79,14 +79,22 @@
             return height;
         }
 
+        function buildOverlayChart() {
+            // building a graph in overlay mode
+            if (chart_display_mode === 'group') {
+                Plotly.react(chart, data_overlay, layout_overlay);
+                chart_display_mode = 'overlay';
+            }
+        }
+
         let chart_data = ({{ chart_data|safe|default:'[]' }});
         let filter_data = ({{ filter_data|safe|default:'[]' }});
-        let data = [];
+        let data_overlay = [];
         let unique_actors = new Set();
         let unique_statuses = [];
         let bargap = 1.25;    // indent between intervals in fractions of the interval width by y
         let chart = document.getElementById('chart');
-        let mode = 'overlay';    //graph display mode
+        let chart_display_mode = 'overlay';    //graph display mode
 
         chart_data.forEach(function (task) {
             unique_actors.add(task['actor']);
@@ -108,7 +116,7 @@
                 `Duration: ${duration}<br>` +
                 `Start: ${task['start'].slice(0, -3)}<br>` +
                 `End: ${task['end'].slice(0, -3)}`;
-            data.push({
+            data_overlay.push({
                 x: [x_start, x_start, x_end, x_end, x_start],
                 y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5],
                 type: 'scatter',
@@ -131,9 +139,9 @@
 
             // adding only unique statuses to the legend
             if (unique_statuses.includes(task['status'])) {
-                data[data.length - 1]['showlegend'] = false;
+                data_overlay[data_overlay.length - 1]['showlegend'] = false;
             } else {
-                data[data.length - 1]['showlegend'] = true;
+                data_overlay[data_overlay.length - 1]['showlegend'] = true;
                 unique_statuses.push(task['status']);
             }
         });
@@ -144,7 +152,7 @@
             y_tickvals.push(tick);
         }
 
-        let layout = {
+        let layout_overlay = {
             title: {
                 text: {{ chart_title|safe|default:"''" }},
                 font: {
@@ -173,8 +181,8 @@
             height: heightCalculator(unique_actors.size, 30, 300),
         };
 
-        if (data.length > 0) {
-            Plotly.newPlot(chart, data, layout);
+        if (data_overlay.length > 0) {
+            Plotly.newPlot(chart, data_overlay, layout_overlay);
         }
 
         let drag_layer = document.getElementsByClassName('nsewdrag')[0];    // cursor object
@@ -182,26 +190,26 @@
         // uncovering of tasks within a single actor
         chart.on('plotly_click', function (eventdata) {
             let current_actor = eventdata.points[0].data.customdata['actor'];
-            if (mode === 'overlay' && eventdata.event['detail'] === 1) {
-                let data_single = [];
-                let unique_statuses_single = [];
+            if (chart_display_mode === 'overlay' && eventdata.event['detail'] === 1) {
+                let data_group = [];
+                let unique_statuses_group = [];
                 let y = bargap;
-                data.forEach(function (task) {
+                data_overlay.forEach(function (task) {
                     if (task['customdata']['actor'] === current_actor) {
-                        data_single.push(Object.assign({}, task, {
+                        data_group.push(Object.assign({}, task, {
                             y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5],
                         }))
                         y += bargap;
-                        if (unique_statuses_single.includes(task['group'])) {
-                            data_single[data_single.length - 1]['showlegend'] = false;
+                        if (unique_statuses_group.includes(task['group'])) {
+                            data_group[data_group.length - 1]['showlegend'] = false;
                         } else {
-                            data_single[data_single.length - 1]['showlegend'] = true;
-                            unique_statuses_single.push(task['group']);
+                            data_group[data_group.length - 1]['showlegend'] = true;
+                            unique_statuses_group.push(task['group']);
                         }
                     }
                 });
 
-                let layout_single = Object.assign({}, layout, {
+                let layout_group = Object.assign({}, layout_overlay, {
                     title: {
                         text: {{ chart_title|safe|default:"''" }} +`<br><br>Tasks for ${current_actor}`,
                         font: {
@@ -215,35 +223,23 @@
                         tickvals: [y / 2],
                         ticktext: [current_actor],
                     },
-                    height: heightCalculator(data_single.length, 15, 350),
+                    height: heightCalculator(data_group.length, 15, 350),
                 });
-                Plotly.react(chart, data_single, layout_single);
-                mode = 'group';
+                Plotly.react(chart, data_group, layout_group);
+                chart_display_mode = 'group';
             }
         }).on('plotly_hover', function () {
             // the cursor changes when hovering over an interval
-            if (mode === 'overlay') {
-                drag_layer.style.cursor = 'pointer';
-            }
-            else {
-                drag_layer.style.cursor = 'default';
-            }
+            chart_display_mode === 'overlay' ? drag_layer.style.cursor = 'pointer' : drag_layer.style.cursor = 'default';
         }).on('plotly_unhover', function () {
             drag_layer.style.cursor = '';
         });
-
         //switch to overlay mode by pressing escape or double-clicking
         document.addEventListener('keyup', function(event) {
-            if (mode === 'group' && event.key === "Escape" && !(event.ctrlKey || event.altKey || event.shiftKey)) {
-                Plotly.react(chart, data, layout);
-                mode = 'overlay';
+            if (event.key === "Escape" && !(event.ctrlKey || event.altKey || event.shiftKey)) {
+                buildOverlayChart();
             }
         });
-        chart.on('plotly_doubleclick', function(){
-            if (mode === 'group') {
-                Plotly.react(chart, data, layout);
-                mode = 'overlay';
-            }
-        });
+        chart.on('plotly_doubleclick', buildOverlayChart);
     </script>
 {% endblock %}
