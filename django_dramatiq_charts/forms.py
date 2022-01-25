@@ -2,7 +2,6 @@ import json
 import math
 import datetime
 from collections import Counter
-from operator import itemgetter
 
 from django import forms
 from django.core.cache import cache
@@ -178,7 +177,7 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         dt_format_ms = "%Y-%m-%d %H:%M:%S.%f"
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
-        ).order_by('updated_at')
+        ).order_by('-created_at', '-updated_at')
         timeline_chart_qs = get_timeline_chart_qs()
         if actor:
             task_qs = task_qs.filter(actor_name=actor)
@@ -207,8 +206,6 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
                 'start': task.created_at.strftime(dt_format_ms),
                 'end': task.updated_at.strftime(dt_format_ms),
             })
-        chart_data.sort(key=itemgetter('start'), reverse=True)
-        chart_data.sort(key=itemgetter('actor'), reverse=True)
         chart_title = ', '.join(
             '{}: <b>{}</b>'.format(self.fields[key].label, value) for key, value in cd.items() if value)
         return {
