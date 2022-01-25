@@ -52,6 +52,10 @@ def _4_hours_ago() -> datetime.datetime:
     return datetime.datetime.now() - datetime.timedelta(hours=4)
 
 
+def _permanent_hex_color_for_name(name: str) -> str:
+    return '#' + hex((abs(hash(name)) + 1) * 1234567890)[2:8]
+
+
 class BasicFilterForm(forms.Form):
     date_format = "%Y-%m-%d"
     dt_format_sec = "%Y-%m-%d %H:%M:%S"
