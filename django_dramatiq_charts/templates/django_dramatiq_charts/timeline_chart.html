@@ -15,6 +15,7 @@
     </form>
     {% if empty_qs %}
         <p class="msg">🔍 there is no data for the specified criteria</p>
+        <p class="text-center">{{ chart_title|safe }}</p>
     {% elif chart_data %}
         <div id='chart'></div>
     {% else %}
@@ -157,7 +158,7 @@
 
         let layout_overlay = {
             title: {
-                text: {{ chart_title|safe|default:"''" }},
+                text: "{{ chart_title|safe }}",
                 font: {
                     size: 15,
                 }
@@ -214,7 +215,7 @@
 
                 let layout_group = Object.assign({}, layout_overlay, {
                     title: {
-                        text: {{ chart_title|safe|default:"''" }} +`<br><br>Tasks for ${current_actor}`,
+                        text: "{{ chart_title|safe }}" +`<br><br>Tasks for ${current_actor}`,
                         font: {
                             size: 15,
                         }
