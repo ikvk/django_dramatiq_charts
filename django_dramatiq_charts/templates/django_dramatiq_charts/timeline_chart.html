@@ -7,11 +7,13 @@
 {% block content %}
     <form method="GET" class="filter_form">
         {{ form }}
-        <button type="submit">Build chart</button>
-        <a href="."><i>Reset</i></a>
-        {% if cache_enabled %}
-            <a href="{% url 'ddc_clean_cache' %}"><i>Update cache</i></a>
-        {% endif %}
+        <nobr>
+            <button type="submit">Build chart</button>
+            <a href="."><i>Reset</i></a>
+            {% if cache_enabled %}
+                <a href="{% url 'ddc_clean_cache' %}"><i>Update cache</i></a>
+            {% endif %}
+        </nobr>
     </form>
     {% if empty_qs %}
         <p class="msg">🔍 there is no data for the specified criteria</p>
@@ -215,7 +217,7 @@
 
                 let layout_group = Object.assign({}, layout_overlay, {
                     title: {
-                        text: "{{ chart_title|safe }}" +`<br><br>Tasks for ${current_actor}`,
+                        text: "{{ chart_title|safe }}" + `<br><br>Tasks for ${current_actor}`,
                         font: {
                             size: 15,
                         }
