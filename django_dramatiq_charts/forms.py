@@ -231,6 +231,7 @@ class DramatiqTimelineChartForm(BasicFilterForm):
                 'actor': task.actor_name,
                 'queue': task.queue_name,
                 'status': task.status,
+                'color': _permanent_hex_color_for_name(task.actor_name),
                 'duration': get_dt_delta_ms(task.created_at, task.updated_at),
                 'start': task.created_at.strftime(self.dt_format_ms),
                 'end': task.updated_at.strftime(self.dt_format_ms),

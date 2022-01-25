@@ -25,14 +25,6 @@
 
 {% block extrabottom %}
     <script>
-        function actorColorPicker(actor) {
-            // color choice for the actors
-            let actor_index = [...unique_actors].indexOf(actor);
-            if (actor_index < 0) {
-                actor_index = unique_actors.size;
-            }
-        }
-
         $("#id_status").select2({
             placeholder: "All statuses",
             multiple: true,
@@ -45,25 +37,6 @@
             placeholder: "All queues",
             multiple: true,
         });
-
-        function statusColor(status) {
-            // color definition for status
-            switch (status) {
-                case 'enqueued':
-                    return 'rgb(126,59,243)';
-                case 'delayed':
-                    return 'rgb(232,157,17)';
-                case 'running':
-                    return 'rgb(72,139,222)';
-                case 'failed':
-                    return 'rgb(239,77,50)';
-                case 'done':
-                    return 'rgb(30,190,54)';
-                case 'skipped':
-                    return 'rgb(100, 100, 100)';
-            }
-            return actor_color[actor_index % actor_color.length];
-        }
 
         function msToString(milliseconds) {
             // converting milliseconds to '{hours}h {minutes}m {seconds}s {milliseconds}ms'
@@ -97,20 +70,6 @@
             }
             return height;
         }
-
-        // colors for actors
-        const actor_color = [
-            '#1f77b4',
-            '#ff7f0e',
-            '#2ca02c',
-            '#d62728',
-            '#9467bd',
-            '#8c564b',
-            '#e377c2',
-            '#7f7f7f',
-            '#bcbd22',
-            '#17becf',
-        ];
 
         // colors for status
         const status_color = {
@@ -176,7 +135,7 @@
                 type: 'scatter',
                 mode: 'lines',
                 line: {
-                    color: actorColorPicker(actor),
+                    color: task['color'],
                     width: 0,
                 },
                 fill: 'toself',
