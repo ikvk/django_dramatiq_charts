@@ -15,6 +15,7 @@
     </form>
     {% if empty_qs %}
         <p class="msg">🔍 there is no data for the specified criteria</p>
+        <p class="text-center">{{ chart_title|safe }}</p>
     {% elif chart_data %}
         <div id='chart'></div>
     {% else %}
@@ -194,7 +195,7 @@
 
         let layout = {
             title: {
-                text: {{ chart_title|safe|default:"''" }},
+                text: "{{ chart_title|safe }}",
                 font: {
                     size: 15,
                 },
