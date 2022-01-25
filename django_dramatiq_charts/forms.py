@@ -3,7 +3,6 @@ import math
 import datetime
 from hashlib import md5
 from collections import Counter
-from operator import itemgetter
 
 from django import forms
 from django.core.cache import cache
@@ -206,7 +205,7 @@ class DramatiqTimelineChartForm(BasicFilterForm):
         statuses = cd.get('status')
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
-        ).order_by('updated_at')
+        ).order_by('-created_at', '-updated_at')
         timeline_chart_qs = get_timeline_chart_qs()
         if actors:
             task_qs = task_qs.filter(actor_name__in=actors)
@@ -234,12 +233,11 @@ class DramatiqTimelineChartForm(BasicFilterForm):
                 'actor': task.actor_name,
                 'queue': task.queue_name,
                 'status': task.status,
+                'color': _permanent_hex_color_for_name(task.actor_name),
                 'duration': get_dt_delta_ms(task.created_at, task.updated_at),
                 'start': task.created_at.strftime(self.dt_format_ms),
                 'end': task.updated_at.strftime(self.dt_format_ms),
             })
-        chart_data.sort(key=itemgetter('start'), reverse=True)
-        chart_data.sort(key=itemgetter('actor'), reverse=True)
         return {
             'filter_data': json.dumps(filter_data),
             'chart_data': json.dumps(chart_data),

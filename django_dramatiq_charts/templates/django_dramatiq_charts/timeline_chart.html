@@ -40,24 +40,6 @@
             multiple: true,
         });
 
-        function statusColor(status) {
-            // color definition for status
-            switch (status) {
-                case 'enqueued':
-                    return 'rgb(126,59,243)';
-                case 'delayed':
-                    return 'rgb(232,157,17)';
-                case 'running':
-                    return 'rgb(72,139,222)';
-                case 'failed':
-                    return 'rgb(239,77,50)';
-                case 'done':
-                    return 'rgb(30,190,54)';
-                case 'skipped':
-                    return 'rgb(100, 100, 100)';
-            }
-        }
-
         function msToString(milliseconds) {
             // converting milliseconds to '{hours}h {minutes}m {seconds}s {milliseconds}ms'
             if (milliseconds <= 0) {
@@ -91,19 +73,38 @@
             return height;
         }
 
+        // colors for status
+        const status_color = {
+            enqueued: 'rgb(126,59,243)',
+            delayed: 'rgb(232,157,17)',
+            running: 'rgb(72,139,222)',
+            failed: 'rgb(239,77,50)',
+            done: 'rgb(30,190,54)',
+            skipped: 'rgb(100, 100, 100)',
+        };
+
         let chart_data = ({{ chart_data|safe|default:'[]' }});
         let filter_data = ({{ filter_data|safe|default:'[]' }});
-        let data_overlay = [];
+        let data = [];
         let unique_actors = new Set();
-        let unique_statuses = [];
+        let unique_status = new Set();
         let bargap = 1.25;    // indent between intervals in fractions of the interval width by y
         let chart = document.getElementById('chart');
-        let chart_display_mode = 'overlay';
-        let chart_config = {responsive: true}
-
+        let chart_config = {responsive: true};
+        let y_time = [];    // task start time
+        let y = 0;
         chart_data.forEach(function (task) {
-            unique_actors.add(task['actor']);
-            let y = unique_actors.size * bargap;
+            let actor = task['actor'];
+            let status = task['status'];
+            let color = status_color[status];
+            let duration = msToString(task['duration']);
+            let text =
+                `Actor: ${actor}<br>` +
+                `Queue: ${task['queue']}<br>` +
+                `Status: <span style="color:${color}">${status}</span><br>` +
+                `Duration: ${duration}<br>` +
+                `Start: ${task['start'].slice(0, -3)}<br>` +
+                `End: ${task['end'].slice(0, -3)}`;
             let x_start = new Date(
                 (task['start'] > filter_data['start_date']) ? task['start'] : filter_data['start_date']
             );
@@ -113,148 +114,85 @@
                 x_end = new Date(x_start.getTime() + 1000);
             }
             x_end = (x_end < new Date(filter_data['end_date'])) ? x_end : new Date(filter_data['end_date']);
-            let color = statusColor(task['status']);
-            let duration = msToString(task['duration']);
-            let text =
-                `Actor: ${task['actor']}<br>` +
-                `Queue: ${task['queue']}<br>` +
-                `Status: <span style="color:${color}">${task['status']}</span><br>` +
-                `Duration: ${duration}<br>` +
-                `Start: ${task['start'].slice(0, -3)}<br>` +
-                `End: ${task['end'].slice(0, -3)}`;
-            data_overlay.push({
+
+            // status border
+            data.push({
                 x: [x_start, x_start, x_end, x_end, x_start],
                 y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5],
                 type: 'scatter',
                 mode: 'lines',
                 line: {
                     color: color,
-                    width: 1,
+                    width: 3,
                 },
+                hoverinfo: 'none',
+                legendgroup: actor,
+                showlegend: false,
+            });
+
+            // actor box
+            data.push({
+                x: [x_start, x_start, x_end, x_end],
+                y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5],
+                type: 'scatter',
+                mode: 'lines',
+                line: {width: 0},
                 fill: 'toself',
-                name: task['status'],
-                group: task['status'],
+                fillcolor: task['color'],
+                opacity: 0.65,
+                name: actor,
                 text: text,
                 hoveron: 'all',
                 hoverinfo: 'text',
-                legendgroup: task['status'],
-                customdata: {
-                    actor: task['actor'],
-                },
+                legendgroup: actor,
+                showlegend: !unique_actors.has(actor),
             });
-
-            // adding only unique statuses to the legend
-            if (unique_statuses.includes(task['status'])) {
-                data_overlay[data_overlay.length - 1]['showlegend'] = false;
-            } else {
-                data_overlay[data_overlay.length - 1]['showlegend'] = true;
-                unique_statuses.push(task['status']);
-            }
+            unique_actors.add(actor);
+            unique_status.add(status);
+            y_time.push(new Date(task['start']).toLocaleTimeString());
+            y += bargap;
         });
 
-        // array of ticks for actor names
-        let y_tickvals = [];
-        for (let tick = bargap; tick <= unique_actors.size * bargap; tick += bargap) {
-            y_tickvals.push(tick);
-        }
-
-        let layout_overlay = {
+        let layout = {
             title: {
                 text: "{{ chart_title|safe }}",
                 font: {
                     size: 15,
-                }
+                },
             },
             xaxis: {
                 range: [filter_data['start_date'], filter_data['end_date']],
             },
             yaxis: {
+                title: 'Start time',
                 zeroline: false,
                 automargin: true,
                 tickmode: 'array',
-                tickvals: y_tickvals,
-                ticktext: [...unique_actors],
+                tickvals: [...Array(y_time.length).keys()].map(i => i * bargap),
+                ticktext: [...y_time],
             },
             legend: {
                 title: {
-                    text: `Status<br>`,
-                }
+                    text: `Actor <br>`,
+                },
             },
             hoverlabel: {
                 bgcolor: '#eaeaea',
                 align: 'left',
             },
-            height: heightCalculator(unique_actors.size, 30, 300),
+            height: heightCalculator(y_time.length, 25, 300),
         };
 
-        if (data_overlay.length > 0) {
-            Plotly.newPlot(chart, data_overlay, layout_overlay, chart_config);
+        if (data.length > 0) {
+            Plotly.newPlot(chart, data, layout, chart_config);
         }
 
         let drag_layer = document.getElementsByClassName('nsewdrag')[0];    // cursor object
-
-        // uncovering of tasks within a single actor
-        chart.on('plotly_click', function (eventdata) {
-            let current_actor = eventdata.points[0].data.customdata['actor'];
-            if (chart_display_mode === 'overlay' && eventdata.event['detail'] === 1) {
-                let data_group = [];
-                let unique_statuses_group = [];
-                let y = bargap;
-                data_overlay.forEach(function (task) {
-                    if (task['customdata']['actor'] === current_actor) {
-                        data_group.push(Object.assign({}, task, {
-                            y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5],
-                        }))
-                        y += bargap;
-                        if (unique_statuses_group.includes(task['group'])) {
-                            data_group[data_group.length - 1]['showlegend'] = false;
-                        } else {
-                            data_group[data_group.length - 1]['showlegend'] = true;
-                            unique_statuses_group.push(task['group']);
-                        }
-                    }
-                });
-
-                let layout_group = Object.assign({}, layout_overlay, {
-                    title: {
-                        text: "{{ chart_title|safe }}" + `<br><br>Tasks for ${current_actor}`,
-                        font: {
-                            size: 15,
-                        }
-                    },
-                    yaxis: {
-                        zeroline: false,
-                        automargin: true,
-                        tickmode: 'array',
-                        tickvals: [y / 2],
-                        ticktext: [current_actor],
-                    },
-                    height: heightCalculator(data_group.length, 15, 350),
-                });
-                Plotly.react(chart, data_group, layout_group, chart_config);
-                chart_display_mode = 'group';
-            }
-        }).on('plotly_hover', function () {
-            // the cursor changes when hovering over an interval
-            drag_layer.style.cursor = chart_display_mode === 'overlay' ? 'pointer' : 'default';
+        // the cursor changes when hovering over an interval
+        chart.on('plotly_hover', function () {
+            drag_layer.style.cursor = 'default';
         }).on('plotly_unhover', function () {
             drag_layer.style.cursor = '';
         });
-
-        function buildOverlayChart() {
-            // building a graph in overlay mode
-            if (chart_display_mode === 'group') {
-                Plotly.react(chart, data_overlay, layout_overlay, chart_config);
-                chart_display_mode = 'overlay';
-            }
-        }
-
-        //switch to overlay mode by pressing escape or double-clicking
-        document.addEventListener('keyup', function (event) {
-            if (event.key === "Escape" && !(event.ctrlKey || event.altKey || event.shiftKey)) {
-                buildOverlayChart();
-            }
-        });
-        chart.on('plotly_doubleclick', buildOverlayChart);
     </script>
 {% endblock %}
