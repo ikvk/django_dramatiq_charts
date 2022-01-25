@@ -21,9 +21,9 @@ class TestDramatiqLoadChart(TransactionTestCase):
             start_date=datetime(2022, 1, 1, 1, 0, 0),
             end_date=datetime(2022, 1, 1, 1, 1, 0),
             time_interval=10,
-            queue='',
-            actor='',
-            status=Task.STATUS_DONE,
+            queue=[],
+            actor=[],
+            status=[Task.STATUS_DONE],
         ))
         self.assertTrue(form.is_valid())
 
@@ -92,7 +92,7 @@ class TestDramatiqLoadChart(TransactionTestCase):
         form = DramatiqLoadChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 1, 0, 0),
             end_date=datetime(2022, 1, 1, 1, 1, 0),
-            queue='queue_specific',
+            queue=['queue_specific'],
             time_interval=10,
         ))
         self.assertTrue(form.is_valid())
@@ -105,7 +105,7 @@ class TestDramatiqLoadChart(TransactionTestCase):
         form = DramatiqLoadChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 1, 0, 0),
             end_date=datetime(2022, 1, 1, 1, 1, 0),
-            actor='different_status',
+            actor=['different_status'],
             time_interval=10,
         ))
         self.assertTrue(form.is_valid())
@@ -118,7 +118,7 @@ class TestDramatiqLoadChart(TransactionTestCase):
         form = DramatiqLoadChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 1, 0, 0),
             end_date=datetime(2022, 1, 1, 1, 1, 0),
-            status=Task.STATUS_RUNNING,
+            status=[Task.STATUS_RUNNING],
             time_interval=10,
         ))
         self.assertTrue(form.is_valid())
@@ -163,9 +163,9 @@ class TestDramatiqTimelineChart(TransactionTestCase):
         form = DramatiqTimelineChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 1, 0, 0),
             end_date=datetime(2022, 1, 1, 1, 1, 0),
-            queue='',
-            actor='',
-            status='',
+            queue=[],
+            actor=[],
+            status=[],
         ))
         self.assertTrue(form.is_valid())
 
@@ -216,7 +216,7 @@ class TestDramatiqTimelineChart(TransactionTestCase):
         form = DramatiqTimelineChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 1, 0, 0),
             end_date=datetime(2022, 1, 1, 1, 1, 0),
-            queue='queue_specific',
+            queue=['queue_specific'],
         ))
         self.assertTrue(form.is_valid())
         data = form.get_chart_data()
@@ -229,7 +229,7 @@ class TestDramatiqTimelineChart(TransactionTestCase):
         form = DramatiqTimelineChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 1, 0, 0),
             end_date=datetime(2022, 1, 1, 1, 1, 0),
-            actor='different_status',
+            actor=['different_status'],
         ))
         self.assertTrue(form.is_valid())
         data = form.get_chart_data()
@@ -242,7 +242,7 @@ class TestDramatiqTimelineChart(TransactionTestCase):
         form = DramatiqTimelineChartForm(data=dict(
             start_date=datetime(2022, 1, 1, 1, 0, 0),
             end_date=datetime(2022, 1, 1, 1, 1, 0),
-            status=Task.STATUS_RUNNING,
+            status=[Task.STATUS_RUNNING],
         ))
         self.assertTrue(form.is_valid())
         data = form.get_chart_data()
