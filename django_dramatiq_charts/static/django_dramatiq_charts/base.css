@@ -51,7 +51,7 @@ input, select, button {
 }
 
 select {
-    height: calc(1.3em + .75rem + 2px);
+    height: 2.1em;
     padding: .375rem .4rem;
     font-size: 1rem;
     font-weight: 400;
@@ -65,7 +65,7 @@ select {
 
 
 input {
-    height: calc(1.3em + .75rem + 2px);
+    height: 2.1em;
     padding: 0 .75rem;
     font-size: 1rem;
     font-weight: 400;
@@ -98,6 +98,7 @@ label {
 .errorlist {
     color: red;
     list-style: none;
+    font-size: 2em;
 }
 
 .msg {
@@ -108,4 +109,29 @@ label {
 .filter_form {
     text-align: center;
     margin-bottom: 0.38em;
+}
+
+.select2-container {
+    margin: 0 0.8em 0.4em 0 !important;
+}
+
+.select2-container .select2-search--inline {
+    height: 2.1em;
+}
+
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #ced4da !important;
+    border-radius: .25rem;
+}
+
+#id_status, #id_actor, #id_queue {
+    min-width: 10em !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #e2e3e5 !important;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    margin-top: 2px !important;
 }

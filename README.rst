@@ -65,9 +65,9 @@ Configuration
    * - DJANGO_DRAMATIQ_CHARTS_TIMELINE_CHART_QS
      - Custom queryset for timeline chart
      - None
-   * - DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_MIN
+   * - DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_SEC
      - Minutes to cache choices of queue and actor form fields  (False-like to disable)
-     - 720
+     - 2 hours
 
 Load chart
 ^^^^^^^^^^
