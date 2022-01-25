@@ -8,34 +8,34 @@ from django.core.cache import cache
 from django_dramatiq import models
 
 from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
-from .settings import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_min
+from .config import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_sec
 
 
 def get_actor_choices() -> ((str, str),):
-    cache_form_data_min = get_cache_form_data_min()
+    cache_form_data_sec = get_cache_form_data_sec()
     result = tuple()
-    if cache_form_data_min:
+    if cache_form_data_sec:
         result = cache.get(CACHE_KEY_ACTOR_CHOICES)
     if not result:
-        result = (('', '<all actors>'),) + tuple(
+        result = tuple(
             (i, i) for i in models.Task.tasks.values_list('actor_name', flat=True).distinct().order_by('actor_name')
         )
-        if cache_form_data_min:
-            cache.set(CACHE_KEY_ACTOR_CHOICES, result, cache_form_data_min)
+        if cache_form_data_sec:
+            cache.set(CACHE_KEY_ACTOR_CHOICES, result, cache_form_data_sec)
     return result
 
 
 def get_queue_choices() -> ((str, str),):
-    cache_form_data_min = get_cache_form_data_min()
+    cache_form_data_sec = get_cache_form_data_sec()
     result = tuple()
-    if cache_form_data_min:
+    if cache_form_data_sec:
         result = cache.get(CACHE_KEY_QUEUE_CHOICES)
     if not result:
-        result = (('', '<all queues>'),) + tuple(
+        result = tuple(
             (i, i) for i in models.Task.tasks.values_list('queue_name', flat=True).distinct().order_by('queue_name')
         )
-        if cache_form_data_min:
-            cache.set(CACHE_KEY_QUEUE_CHOICES, result, cache_form_data_min)
+        if cache_form_data_sec:
+            cache.set(CACHE_KEY_QUEUE_CHOICES, result, cache_form_data_sec)
     return result
 
 
@@ -59,10 +59,8 @@ class DramatiqBasicChartForm(forms.Form):
     end_date = forms.DateTimeField(label='Period end', initial=_now_dt, widget=forms.DateTimeInput(
         attrs={'placeholder': 'Period end', 'style': 'width: 9.5rem;', 'maxlength': '19'}
     ))
-    queue = forms.ChoiceField(choices=get_queue_choices, required=False, label='Queue')
-    actor = forms.ChoiceField(choices=get_actor_choices, required=False, label='Actor')
-    status = forms.ChoiceField(choices=[('', '<all statuses>')] + models.Task.STATUSES, required=False,
-                               initial=models.Task.STATUS_DONE, label='Status')
+    queue = forms.MultipleChoiceField(choices=get_queue_choices, required=False, label='Queue')
+    actor = forms.MultipleChoiceField(choices=get_actor_choices, required=False, label='Actor')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -85,6 +83,8 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
         label='Interval sec', initial=10, min_value=1, max_value=60 * 60 * 24,
         widget=forms.TextInput(attrs={'style': 'width: 2rem;', 'maxlength': '5'})
     )
+    status = forms.MultipleChoiceField(label='Status', required=False,
+                                       choices=models.Task.STATUSES, initial=models.Task.STATUS_DONE)
 
     field_order = ['start_date', 'end_date', 'time_interval']
 
@@ -93,20 +93,20 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
         start_date = cd['start_date'].replace(second=0, microsecond=0)
         end_date = cd['end_date'].replace(second=0, microsecond=0)
         tick_sec = cd['time_interval']
-        actor = cd.get('actor')
-        queue = cd.get('queue')
-        status = cd.get('status')
+        actors = cd.get('actor')
+        queues = cd.get('queue')
+        statuses = cd.get('status')
         # get qs
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
         ).order_by('updated_at')
         load_chart_qs = get_load_chart_qs()
-        if actor:
-            task_qs = task_qs.filter(actor_name=actor)
-        if queue:
-            task_qs = task_qs.filter(queue_name=queue)
-        if status:
-            task_qs = task_qs.filter(status=status)
+        if actors:
+            task_qs = task_qs.filter(actor_name__in=actors)
+        if queues:
+            task_qs = task_qs.filter(queue_name__in=queues)
+        if statuses:
+            task_qs = task_qs.filter(status__in=statuses)
         if load_chart_qs:
             task_qs = task_qs.filter(load_chart_qs)
         if not task_qs.count():
@@ -166,25 +166,27 @@ class DramatiqLoadChartForm(DramatiqBasicChartForm):
 
 
 class DramatiqTimelineChartForm(DramatiqBasicChartForm):
+    status = forms.MultipleChoiceField(label='Status', required=False, choices=models.Task.STATUSES)
+
     def get_chart_data(self) -> dict:
         cd = self.cleaned_data
         start_date = cd['start_date']
         end_date = cd['end_date']
-        actor = cd.get('actor')
-        queue = cd.get('queue')
-        status = cd.get('status')
+        actors = cd.get('actor')
+        queues = cd.get('queue')
+        statuses = cd.get('status')
         dt_format_sec = "%Y-%m-%d %H:%M:%S"
         dt_format_ms = "%Y-%m-%d %H:%M:%S.%f"
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
         ).order_by('-created_at', '-updated_at')
         timeline_chart_qs = get_timeline_chart_qs()
-        if actor:
-            task_qs = task_qs.filter(actor_name=actor)
-        if queue:
-            task_qs = task_qs.filter(queue_name=queue)
-        if status:
-            task_qs = task_qs.filter(status=status)
+        if actors:
+            task_qs = task_qs.filter(actor_name__in=actors)
+        if queues:
+            task_qs = task_qs.filter(queue_name__in=queues)
+        if statuses:
+            task_qs = task_qs.filter(status__in=statuses)
         if timeline_chart_qs:
             task_qs = task_qs.filter(timeline_chart_qs)
         if not task_qs.count():
@@ -192,9 +194,9 @@ class DramatiqTimelineChartForm(DramatiqBasicChartForm):
         filter_data = {
             'start_date': start_date.strftime(dt_format_sec),
             'end_date': end_date.strftime(dt_format_sec),
-            'actor': actor,
-            'queue': queue,
-            'status': status,
+            'actor': actors,
+            'queue': queues,
+            'status': statuses,
         }
         chart_data = []
         for task in task_qs:
