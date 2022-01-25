@@ -177,11 +177,11 @@ class TestDramatiqTimelineChart(TransactionTestCase):
         dt_format = "%Y-%m-%d %H:%M:%S.%f"
         chart_data = json.loads(data['chart_data'])
         self.assertEqual(27, len(chart_data))
-        self.assertEqual('different_status', chart_data[-1]['actor'])
-        self.assertEqual('running', chart_data[-1]['status'])
-        self.assertEqual(4000, chart_data[-1]['duration'])
-        self.assertEqual(datetime(2022, 1, 1, 1, 0, 2), datetime.strptime(chart_data[-1]['start'], dt_format))
-        self.assertEqual(datetime(2022, 1, 1, 1, 0, 6), datetime.strptime(chart_data[-1]['end'], dt_format))
+        self.assertEqual('sequential_tasks', chart_data[-1]['actor'])
+        self.assertEqual('done', chart_data[-1]['status'])
+        self.assertEqual(17000, chart_data[-1]['duration'])
+        self.assertEqual(datetime(2022, 1, 1, 0, 59, 50), datetime.strptime(chart_data[-1]['start'], dt_format))
+        self.assertEqual(datetime(2022, 1, 1, 1, 0, 7), datetime.strptime(chart_data[-1]['end'], dt_format))
 
         # filter data
         dt_format = "%Y-%m-%d %H:%M:%S"
