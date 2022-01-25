@@ -1,6 +1,7 @@
 import json
 import math
 import datetime
+from hashlib import md5
 from collections import Counter
 from operator import itemgetter
 
@@ -54,7 +55,8 @@ def _4_hours_ago() -> datetime.datetime:
 
 
 def _permanent_hex_color_for_name(name: str) -> str:
-    return '#' + hex((abs(hash(name)) + 1) * 1234567890)[2:8]
+    hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
+    return '#' + hex_color
 
 
 class BasicFilterForm(forms.Form):
@@ -217,7 +219,7 @@ class DramatiqTimelineChartForm(BasicFilterForm):
         if not task_qs.count():
             return {
                 'chart_title': self.get_title(),
-                'empty_qs': True
+                'empty_qs': True,
             }
         filter_data = {
             'start_date': start_date.strftime(self.dt_format_sec),
