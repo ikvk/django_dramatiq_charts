@@ -20,7 +20,7 @@
         <p class="text-center">{{ chart_title|safe }}</p>
     {% elif chart_data %}
         <div id="chart"></div>
-        <div id="status_color" class="text-center"></div>
+        <div id="status_color" class="status_color_label"></div>
     {% else %}
         <p class="msg">🖦 specify build criteria</p>
     {% endif %}
@@ -199,7 +199,7 @@
             // status color label
             let status_color_label = 'Status color: ';
             unique_status.forEach(function (status) {
-                status_color_label += `<span style="color:${status_color[status]}"><b>${status}</b></span> `;
+                status_color_label += `<span style="color:${status_color[status]}">${status}</span> `;
             });
             let status_color_obj = document.getElementById("status_color");
             status_color_obj.innerHTML = status_color_label;
