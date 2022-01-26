@@ -19,7 +19,8 @@
         <p class="msg">🔍 there is no data for the specified criteria</p>
         <p class="text-center">{{ chart_title|safe }}</p>
     {% elif chart_data %}
-        <div id='chart'></div>
+        <div id="chart"></div>
+        <div id="status_color" class="text-center"></div>
     {% else %}
         <p class="msg">🖦 select build criteria</p>
     {% endif %}
@@ -89,10 +90,11 @@
         let unique_actors = new Set();
         let unique_status = new Set();
         let bargap = 1.25;    // indent between intervals in fractions of the interval width by y
-        let chart = document.getElementById('chart');
-        let chart_config = {responsive: true};
         let y_time = [];    // task start time
         let y = 0;
+        let chart = document.getElementById('chart');
+        let chart_config = {responsive: true};
+
         chart_data.forEach(function (task) {
             let actor = task['actor'];
             let status = task['status'];
@@ -115,7 +117,7 @@
             }
             x_end = (x_end < new Date(filter_data['end_date'])) ? x_end : new Date(filter_data['end_date']);
 
-            // status border
+            // status frame
             data.push({
                 x: [x_start, x_start, x_end, x_end, x_start],
                 y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5],
@@ -146,6 +148,7 @@
                 hoverinfo: 'text',
                 legendgroup: actor,
                 showlegend: !unique_actors.has(actor),
+                xaxis: 'x2',
             });
             unique_actors.add(actor);
             unique_status.add(status);
@@ -163,10 +166,16 @@
             xaxis: {
                 range: [filter_data['start_date'], filter_data['end_date']],
             },
+            xaxis2: {
+                range: [filter_data['start_date'], filter_data['end_date']],
+                overlaying: 'x',
+                side: 'top',
+            },
             yaxis: {
                 title: 'Start time',
                 zeroline: false,
                 automargin: true,
+                range: [-1, (y_time.length - 1) * bargap + 1],
                 tickmode: 'array',
                 tickvals: [...Array(y_time.length).keys()].map(i => i * bargap),
                 ticktext: [...y_time],
@@ -185,14 +194,22 @@
 
         if (data.length > 0) {
             Plotly.newPlot(chart, data, layout, chart_config);
-        }
 
-        let drag_layer = document.getElementsByClassName('nsewdrag')[0];    // cursor object
-        // the cursor changes when hovering over an interval
-        chart.on('plotly_hover', function () {
-            drag_layer.style.cursor = 'default';
-        }).on('plotly_unhover', function () {
-            drag_layer.style.cursor = '';
-        });
+            // status color label
+            let status_color_label = 'Status color: ';
+            unique_status.forEach(function (status) {
+                status_color_label += `<span style="color:${status_color[status]}"><b>${status}</b></span> `;
+            });
+            let status_color_obj = document.getElementById("status_color");
+            status_color_obj.innerHTML = status_color_label;
+
+            // changing the cursor when hovering over an interval
+            let cursor_obj = document.getElementsByClassName('nsewdrag')[0];
+            chart.on('plotly_hover', function () {
+                cursor_obj.style.cursor = 'default';
+            }).on('plotly_unhover', function () {
+                cursor_obj.style.cursor = '';
+            });
+        }
     </script>
 {% endblock %}

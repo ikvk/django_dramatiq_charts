@@ -9,7 +9,7 @@ from django.core.cache import cache
 from django_dramatiq import models
 
 from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
-from .config import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_sec
+from .config import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_sec, get_cache_name_color_sec
 
 
 def get_actor_choices() -> ((str, str),):
@@ -54,7 +54,14 @@ def _4_hours_ago() -> datetime.datetime:
 
 
 def _permanent_hex_color_for_name(name: str) -> str:
-    hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
+    cache_name_color_sec = get_cache_name_color_sec()
+    hex_color = ''
+    if cache_name_color_sec:
+        hex_color = cache.get(name)
+    if not hex_color:
+        hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
+        if cache_name_color_sec:
+            cache.set(name, hex_color, cache_name_color_sec)
     return '#' + hex_color
 
 
