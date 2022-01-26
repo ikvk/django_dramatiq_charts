@@ -15,7 +15,7 @@ with open("README.rst", "r", encoding='utf-8') as fh:
 setuptools.setup(
     name='django-dramatiq-charts',
     version=get_version('django_dramatiq_charts'),
-    packages=setuptools.find_packages(exclude=['tests']),
+    packages=setuptools.find_packages(exclude=['django_dramatiq_charts.tests']),
     include_package_data=True,
     url='https://github.com/ikvk/django_dramatiq_charts',
     license='Apache-2.0',

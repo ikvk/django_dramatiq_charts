@@ -3,7 +3,7 @@
 django_dramatiq_charts 📊
 =========================
 
-Draw charts by `django_dramatiq <https://github.com/Bogdanp/django_dramatiq>`_ task history.
+Draw charts by `django_dramatiq <https://github.com/Bogdanp/django_dramatiq>`_ task history in db.
 
 Chart types: `load <#load-chart>`_ and `timeline <#timeline-chart>`_.
 
