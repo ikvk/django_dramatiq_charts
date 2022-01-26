@@ -22,7 +22,7 @@
         <div id="chart"></div>
         <div id="status_color" class="text-center"></div>
     {% else %}
-        <p class="msg">🖦 select build criteria</p>
+        <p class="msg">🖦 specify build criteria</p>
     {% endif %}
 {% endblock %}
 
@@ -168,6 +168,7 @@
             },
             xaxis2: {
                 range: [filter_data['start_date'], filter_data['end_date']],
+                matches: 'x',
                 overlaying: 'x',
                 side: 'top',
             },
