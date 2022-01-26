@@ -136,6 +136,7 @@ label {
     background-color: #e2e3e5 !important;
 }
 
-.select2-container .select2-search--inline .select2-search__field {
-    margin-top: 2px !important;
+.select2-search__field {
+    height: 1.8em;
+    margin-top: 0.3em !important;
 }
