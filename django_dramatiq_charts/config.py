@@ -17,9 +17,5 @@ def get_timeline_chart_qs():
     return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_TIMELINE_CHART_QS", None)
 
 
-def get_cache_name_color_sec():
-    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_CACHE_NAME_COLOR_SEC", 60 * 60 * 2)  # 2h
-
-
 def get_cache_form_data_sec():
     return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_SEC", 60 * 60 * 2)  # 2h

@@ -9,7 +9,7 @@ from django.core.cache import cache
 from django_dramatiq import models
 
 from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
-from .config import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_sec, get_cache_name_color_sec
+from .config import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_sec
 
 
 def get_actor_choices() -> ((str, str),):
@@ -53,15 +53,11 @@ def _4_hours_ago() -> datetime.datetime:
     return datetime.datetime.now() - datetime.timedelta(hours=4)
 
 
-def _permanent_hex_color_for_name(name: str) -> str:
-    cache_name_color_sec = get_cache_name_color_sec()
-    hex_color = ''
-    if cache_name_color_sec:
-        hex_color = cache.get(name)
+def _permanent_hex_color_for_name(name_colors: dict, name: str) -> str:
+    hex_color = name_colors.get(name)
     if not hex_color:
         hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
-        if cache_name_color_sec:
-            cache.set(name, hex_color, cache_name_color_sec)
+        name_colors[name] = hex_color
     return '#' + hex_color
 
 
@@ -235,12 +231,13 @@ class DramatiqTimelineChartForm(BasicFilterForm):
             'status': statuses,
         }
         chart_data = []
+        name_colors = {}
         for task in task_qs:
             chart_data.append({
                 'actor': task.actor_name,
                 'queue': task.queue_name,
                 'status': task.status,
-                'color': _permanent_hex_color_for_name(task.actor_name),
+                'color': _permanent_hex_color_for_name(name_colors, task.actor_name),
                 'duration': get_dt_delta_ms(task.created_at, task.updated_at),
                 'start': task.created_at.strftime(self.dt_format_ms),
                 'end': task.updated_at.strftime(self.dt_format_ms),
