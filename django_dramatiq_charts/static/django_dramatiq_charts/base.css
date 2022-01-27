@@ -98,6 +98,10 @@ label {
     font-size: 2em;
 }
 
+.errorlist + input {
+    border-color: red;
+}
+
 .msg {
     font-size: 2.5em;
     text-align: center;
