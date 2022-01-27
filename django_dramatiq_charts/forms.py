@@ -230,11 +230,13 @@ class DramatiqTimelineChartForm(BasicFilterForm):
         chart_data = []
         color_map = {}
         for task in task_qs:
+            if task.actor_name not in color_map:
+                color_map[task.actor_name] = _permanent_hex_color_for_name(task.actor_name)
             chart_data.append({
                 'actor': task.actor_name,
                 'queue': task.queue_name,
                 'status': task.status,
-                'color': color_map.setdefault(task.actor_name, _permanent_hex_color_for_name(task.actor_name)),
+                'color': color_map[task.actor_name],
                 'duration': get_dt_delta_ms(task.created_at, task.updated_at),
                 'start': task.created_at.strftime(self.dt_format_ms),
                 'end': task.updated_at.strftime(self.dt_format_ms),
