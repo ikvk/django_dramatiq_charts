@@ -18,4 +18,4 @@ def get_timeline_chart_qs():
 
 
 def get_cache_form_data_sec():
-    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_SEC", 60 * 60 * 2)  # 2h
+    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_SEC", 60 * 60 * 4)
