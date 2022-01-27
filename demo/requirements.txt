@@ -1,4 +1,4 @@
-Django==3.2.11                 # high-level Web framework that encourages rapid development and clean, pragmatic design.
+Django==2.2.26                 # high-level Web framework that encourages rapid development and clean, pragmatic design.
 django_dramatiq==0.10.0        # Django app that integrates with Dramatiq
 dramatiq==1.11.0               # A fast and reliable distributed task processing library (вместо "dramatiq[rabbitmq, redis, watch]==" зависимости указаны явно)
     pika==1.2.0                # *dramatiq rabbitmq
