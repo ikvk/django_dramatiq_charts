@@ -1,8 +1,9 @@
+import datetime
 import json
 import math
-import datetime
-from hashlib import md5
 from collections import Counter
+from functools import lru_cache
+from hashlib import md5
 
 from django import forms
 from django.core.cache import cache
@@ -53,6 +54,7 @@ def _4_hours_ago() -> datetime.datetime:
     return datetime.datetime.now() - datetime.timedelta(hours=4)
 
 
+@lru_cache(maxsize=None)
 def _permanent_hex_color_for_name(name: str) -> str:
     hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
     return '#' + hex_color

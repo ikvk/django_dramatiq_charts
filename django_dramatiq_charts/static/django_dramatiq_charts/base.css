@@ -15,8 +15,7 @@ button {
     font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
     font-size: 1em;
     font-weight: 400;
-    line-height: 1.15385;
-    margin: 0;
+    line-height: 1.31;
     outline: none;
     padding: .45em .8em;
     position: relative;
@@ -45,7 +44,6 @@ button:active {
     color: #2c5777;
 }
 
-
 input, select, button {
     margin: 0 0.8em 0.4em 0;
 }
@@ -62,7 +60,6 @@ select {
     border: 1px solid #ced4da;
     border-radius: .25rem;
 }
-
 
 input {
     height: 2.1em;
@@ -87,7 +84,6 @@ a {
     font-size: 1.1rem;
     font-weight: 400;
 }
-
 
 label {
     font-size: 1.1rem;
@@ -115,12 +111,22 @@ label {
     margin-bottom: 0.38em;
 }
 
+.status_color_label {
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.status_color_label span {
+    font-weight: bold;
+    padding: .1em;
+}
+
 .select2-container {
-    margin: 0 0.8em 0.4em 0 !important;
+    margin: 0 0.8em 0.25em 0 !important;
 }
 
 .select2-container .select2-search--inline {
-    height: 2.1em;
+    height: 1.88em;
 }
 
 .select2-container--default .select2-selection--multiple {
@@ -136,6 +142,7 @@ label {
     background-color: #e2e3e5 !important;
 }
 
-.select2-container .select2-search--inline .select2-search__field {
-    margin-top: 2px !important;
+.select2-search__field {
+    height: 1.6em;
+    margin-top: 0.26em !important;
 }
