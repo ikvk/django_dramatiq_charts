@@ -15,8 +15,7 @@ button {
     font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
     font-size: 1em;
     font-weight: 400;
-    line-height: 1.15385;
-    margin: 0;
+    line-height: 1.31;
     outline: none;
     padding: .45em .8em;
     position: relative;
@@ -123,11 +122,11 @@ label {
 }
 
 .select2-container {
-    margin: 0 0.8em 0.4em 0 !important;
+    margin: 0 0.8em 0.25em 0 !important;
 }
 
 .select2-container .select2-search--inline {
-    height: 2.1em;
+    height: 1.88em;
 }
 
 .select2-container--default .select2-selection--multiple {
@@ -144,6 +143,6 @@ label {
 }
 
 .select2-search__field {
-    height: 1.8em;
-    margin-top: 0.3em !important;
+    height: 1.6em;
+    margin-top: 0.26em !important;
 }
