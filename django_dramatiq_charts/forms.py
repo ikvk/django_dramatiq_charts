@@ -46,6 +46,11 @@ def get_dt_delta_ms(start: datetime.datetime, end: datetime.datetime) -> int:
     return int((end - start).total_seconds() * 1000)
 
 
+def permanent_hex_color_for_name(name: str) -> str:
+    hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
+    return '#' + hex_color
+
+
 def _now_dt() -> datetime.datetime:
     return datetime.datetime.now()
 
@@ -54,10 +59,8 @@ def _4_hours_ago() -> datetime.datetime:
     return datetime.datetime.now() - datetime.timedelta(hours=4)
 
 
-@lru_cache(maxsize=None)
-def _permanent_hex_color_for_name(name: str) -> str:
-    hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
-    return '#' + hex_color
+def _1_hours_ago() -> datetime.datetime:
+    return datetime.datetime.now() - datetime.timedelta(hours=1)
 
 
 class BasicFilterForm(forms.Form):
@@ -198,6 +201,10 @@ class DramatiqLoadChartForm(BasicFilterForm):
 class DramatiqTimelineChartForm(BasicFilterForm):
     status = forms.MultipleChoiceField(label='Status', required=False, choices=models.Task.STATUSES)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['start_date'].initial = _1_hours_ago
+
     def get_chart_data(self) -> dict:
         cd = self.cleaned_data
         start_date = cd['start_date']
@@ -233,7 +240,7 @@ class DramatiqTimelineChartForm(BasicFilterForm):
         color_map = {}
         for task in task_qs:
             if task.actor_name not in color_map:
-                color_map[task.actor_name] = _permanent_hex_color_for_name(task.actor_name)
+                color_map[task.actor_name] = permanent_hex_color_for_name(task.actor_name)
             chart_data.append({
                 'actor': task.actor_name,
                 'queue': task.queue_name,
