@@ -119,8 +119,8 @@
 
             // status frame
             data.push({
-                x: [x_start, x_start, x_end, x_end, x_start],
-                y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5],
+                x: [x_start, x_start, x_end, x_end, x_start, x_start],
+                y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5, y + 0.5],
                 type: 'scatter',
                 mode: 'lines',
                 line: {
@@ -130,6 +130,7 @@
                 hoverinfo: 'none',
                 legendgroup: actor,
                 showlegend: false,
+                xaxis: 'x2',
             });
 
             // actor box
@@ -148,7 +149,6 @@
                 hoverinfo: 'text',
                 legendgroup: actor,
                 showlegend: !unique_actors.has(actor),
-                xaxis: 'x2',
             });
             unique_actors.add(actor);
             unique_status.add(status);
