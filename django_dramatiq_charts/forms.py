@@ -1,8 +1,9 @@
+import datetime
 import json
 import math
-import datetime
-from hashlib import md5
 from collections import Counter
+from functools import lru_cache
+from hashlib import md5
 
 from django import forms
 from django.core.cache import cache
@@ -53,11 +54,9 @@ def _4_hours_ago() -> datetime.datetime:
     return datetime.datetime.now() - datetime.timedelta(hours=4)
 
 
-def _permanent_hex_color_for_name(name_colors: dict, name: str) -> str:
-    hex_color = name_colors.get(name)
-    if not hex_color:
-        hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
-        name_colors[name] = hex_color
+@lru_cache(maxsize=None)
+def _permanent_hex_color_for_name(name: str) -> str:
+    hex_color: str = md5(str(name).encode()).hexdigest()[1:7]
     return '#' + hex_color
 
 
@@ -231,13 +230,12 @@ class DramatiqTimelineChartForm(BasicFilterForm):
             'status': statuses,
         }
         chart_data = []
-        name_colors = {}
         for task in task_qs:
             chart_data.append({
                 'actor': task.actor_name,
                 'queue': task.queue_name,
                 'status': task.status,
-                'color': _permanent_hex_color_for_name(name_colors, task.actor_name),
+                'color': _permanent_hex_color_for_name(task.actor_name),
                 'duration': get_dt_delta_ms(task.created_at, task.updated_at),
                 'start': task.created_at.strftime(self.dt_format_ms),
                 'end': task.updated_at.strftime(self.dt_format_ms),
