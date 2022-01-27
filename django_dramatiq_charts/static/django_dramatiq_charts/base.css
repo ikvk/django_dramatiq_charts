@@ -15,7 +15,8 @@ button {
     font-family: -apple-system, system-ui, "Segoe UI", "Liberation Sans", sans-serif;
     font-size: 1em;
     font-weight: 400;
-    line-height: 1.31;
+    line-height: 1.1;
+    margin: 0;
     outline: none;
     padding: .45em .8em;
     position: relative;
