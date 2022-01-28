@@ -119,8 +119,8 @@
 
             // status frame
             data.push({
-                x: [x_start, x_start, x_end, x_end, x_start, x_start],
-                y: [y - 0.5, y + 0.5, y + 0.5, y - 0.5, y - 0.5, y + 0.5],
+                x: [x_start, x_start, x_start, x_end, x_end, x_end, x_start, x_start],
+                y: [y - 0.5, y, y + 0.5, y + 0.5, y, y - 0.5, y - 0.5, y],
                 type: 'scatter',
                 mode: 'lines',
                 line: {
@@ -175,8 +175,9 @@
             yaxis: {
                 title: 'Start time',
                 zeroline: false,
-                automargin: true,
-                range: [-1, (y_time.length - 1) * bargap + 1],
+                automargin: false,
+                range: [-1, (y_time.length - 1) * bargap * 2.4 + 3.5],
+                type: 'category',
                 tickmode: 'array',
                 tickvals: [...Array(y_time.length).keys()].map(i => i * bargap),
                 ticktext: [...y_time],
