@@ -35,7 +35,18 @@ Guide
 Configuration
 ^^^^^^^^^^^^^
 
-1. Add lib views to your urls:
+1. Add django_dramatiq_charts to installed apps after django_dramatiq app:
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        'django_dramatiq',
+        'django_dramatiq_charts',
+        'my_app',
+        # ...
+    ]
+
+2. Add lib views to your urls:
 
 .. code-block:: python
 
@@ -45,7 +56,7 @@ Configuration
     path('django_dramatiq_charts/timeline_chart/', timeline_chart, name='ddc_timeline_chart'),
     path('django_dramatiq_charts/clean_cache/', clean_cache, name='ddc_clean_cache'),
 
-2. Configure lib parameters in your project settings file:
+3. Configure lib parameters in your project settings file:
 
 .. list-table::
    :header-rows: 1
