@@ -92,6 +92,7 @@ History of important changes: `release_notes.rst <https://github.com/ikvk/django
 Thanks
 ------
 
-Thanks to people who helped develop this library:
+Thanks to all who helped develop this library:
 
-`MilkyCake <https://github.com/MilkyCake>`_
+`MilkyCake <https://github.com/MilkyCake>`_,
+`flaticon.com <https://www.flaticon.com/free-icons/bar-chart>`_
