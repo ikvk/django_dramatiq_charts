@@ -35,7 +35,18 @@ Guide
 Configuration
 ^^^^^^^^^^^^^
 
-1. Add lib views to your urls:
+1. Add django_dramatiq_charts to installed apps after django_dramatiq app:
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        'django_dramatiq',
+        'django_dramatiq_charts',
+        'my_app',
+        # ...
+    ]
+
+2. Add lib views to your urls:
 
 .. code-block:: python
 
@@ -45,7 +56,7 @@ Configuration
     path('django_dramatiq_charts/timeline_chart/', timeline_chart, name='ddc_timeline_chart'),
     path('django_dramatiq_charts/clean_cache/', clean_cache, name='ddc_clean_cache'),
 
-2. Configure lib parameters in your project settings file:
+3. Configure lib parameters in your project settings file:
 
 .. list-table::
    :header-rows: 1
@@ -69,7 +80,7 @@ Configuration
 Load chart
 ^^^^^^^^^^
 
-**Shows the number of simultaneously executed actors in each time interval**
+**Shows the number of simultaneously executed actors in each time interval on timeline**
 
 .. image:: docs/load_chart.png
 
@@ -78,14 +89,9 @@ Tasks running more than one day are not counted (assumed to be an error).
 Timeline chart
 ^^^^^^^^^^^^^^
 
-**1. Tasks grouped by actor name.**
+**Shows actors on timeline**
 
-.. figure:: docs/timeline_chart_overlay.png
-
-**2. Click on the group to see all the actors of the group. Esc or double click for go back.**
-
-.. figure:: docs/timeline_chart_group.png
-
+.. figure:: docs/timeline_chart.png
 
 If the task duration is less than a second, this task is depicted on the chart with a duration of 1 second.
 
@@ -97,6 +103,7 @@ History of important changes: `release_notes.rst <https://github.com/ikvk/django
 Thanks
 ------
 
-Big thanks to people who helped develop this library:
+Thanks to all who helped develop this library:
 
-`MilkyCake <https://github.com/MilkyCake>`_
+`MilkyCake <https://github.com/MilkyCake>`_,
+`flaticon.com <https://www.flaticon.com/free-icons/bar-chart>`_
