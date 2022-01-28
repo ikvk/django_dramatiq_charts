@@ -2,7 +2,6 @@ import datetime
 import json
 import math
 from collections import Counter
-from functools import lru_cache
 from hashlib import md5
 
 from django import forms
