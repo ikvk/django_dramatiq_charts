@@ -56,9 +56,6 @@ Configuration
    * - DJANGO_DRAMATIQ_CHARTS_PERM_FN
      - users with access to the charts
      - def fn(request): return request.user.is_superuser
-   * - DJANGO_DRAMATIQ_CHARTS_PLOTLY_LIB
-     - Link to Plotly.js lib
-     - 'https://cdn.plot.ly/plotly-2.8.3.min.js'
    * - DJANGO_DRAMATIQ_CHARTS_LOAD_CHART_QS
      - Custom queryset for load chart
      - None

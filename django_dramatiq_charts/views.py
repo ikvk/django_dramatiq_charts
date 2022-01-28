@@ -16,12 +16,9 @@ def load_chart(request):
     if not (get_perm_fn())(request):
         return HttpResponse(_err_access_denied)
     response = {}
-    if request.GET:
-        form = DramatiqLoadChartForm(request.GET)
-        if form.is_valid():
-            response.update(form.get_chart_data())
-    else:
-        form = DramatiqLoadChartForm()
+    form = DramatiqLoadChartForm(request.GET or None)
+    if form.is_valid():
+        response.update(form.get_chart_data())
     response.update({
         'form': form,
         'cache_enabled': get_cache_form_data_sec(),
@@ -35,12 +32,9 @@ def timeline_chart(request):
     if not (get_perm_fn())(request):
         return HttpResponse(_err_access_denied)
     response = {}
-    if request.GET:
-        form = DramatiqTimelineChartForm(request.GET)
-        if form.is_valid():
-            response.update(form.get_chart_data())
-    else:
-        form = DramatiqTimelineChartForm()
+    form = DramatiqTimelineChartForm(request.GET or None)
+    if form.is_valid():
+        response.update(form.get_chart_data())
     response.update({
         'form': form,
         'cache_enabled': get_cache_form_data_sec(),
