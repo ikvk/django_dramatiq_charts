@@ -191,7 +191,7 @@ class DramatiqLoadChartForm(BasicFilterForm):
             'categories': json.dumps(categories),
             'working_actors_count': json.dumps(working_actors_count),
             'dates': json.dumps(dates),
-            'chart_height': json.dumps(200 + len(categories) * 25),
+            'chart_height': json.dumps(200 + len(categories) * 30),
             'chart_title': self.get_title(),
             'empty_qs': False,
         }

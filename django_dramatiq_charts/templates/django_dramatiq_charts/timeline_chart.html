@@ -81,7 +81,7 @@
             running: 'rgb(72,139,222)',
             failed: 'rgb(239,77,50)',
             done: 'rgb(30,190,54)',
-            skipped: 'rgb(100, 100, 100)',
+            skipped: 'rgb(100,100,100)',
         };
 
         let chart_data = ({{ chart_data|safe|default:'[]' }});
@@ -94,6 +94,8 @@
         let y = 0;
         let chart = document.getElementById('chart');
         let chart_config = {responsive: true};
+        // the minimum displayed duration of tasks is 1% of the plotting range
+        let min_display_time = (new Date(filter_data['end_date']) - new Date(filter_data['start_date'])) * 0.01;
 
         chart_data.forEach(function (task) {
             let actor = task['actor'];
@@ -107,17 +109,18 @@
                 `Duration: ${duration}<br>` +
                 `Start: ${task['start'].slice(0, -3)}<br>` +
                 `End: ${task['end'].slice(0, -3)}`;
+
+            // time interval correction
             let x_start = new Date(
                 (task['start'] > filter_data['start_date']) ? task['start'] : filter_data['start_date']
             );
             let x_end = new Date(task['end']);
-            // show momental as 1 sec when the duration is less than 1 sec
-            if (task['duration'] < 1000) {
-                x_end = new Date(x_start.getTime() + 1000);
+            if (task['duration'] < min_display_time) {
+                x_end = new Date(x_start.getTime() + min_display_time);
             }
             x_end = (x_end < new Date(filter_data['end_date'])) ? x_end : new Date(filter_data['end_date']);
 
-            // status frame
+            // status border
             data.push({
                 x: [x_start, x_start, x_start, x_end, x_end, x_end, x_start, x_start],
                 y: [y - 0.5, y, y + 0.5, y + 0.5, y, y - 0.5, y - 0.5, y],
