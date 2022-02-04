@@ -32,7 +32,7 @@ class TestDramatiqLoadChart(TransactionTestCase):
         self.assertFalse(data['empty_qs'])
 
         # chart height
-        self.assertEqual('300', data['chart_height'])
+        self.assertEqual('320', data['chart_height'])
 
         # categories
         self.assertEqual(['specific_tasks', 'sequential_tasks', 'parallel_tasks', 'different_status'],
