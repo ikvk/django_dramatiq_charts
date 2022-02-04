@@ -94,8 +94,6 @@
         let y = 0;
         let chart = document.getElementById('chart');
         let chart_config = {responsive: true};
-        // the minimum displayed duration of tasks is 1% of the plotting range
-        let min_display_time = (new Date(filter_data['end_date']) - new Date(filter_data['start_date'])) * 0.01;
 
         chart_data.forEach(function (task) {
             let actor = task['actor'];
@@ -115,8 +113,8 @@
                 (task['start'] > filter_data['start_date']) ? task['start'] : filter_data['start_date']
             );
             let x_end = new Date(task['end']);
-            if (task['duration'] < min_display_time) {
-                x_end = new Date(x_start.getTime() + min_display_time);
+            if (task['duration'] < 1000) {
+                x_end = new Date(x_start.getTime() + 1000);
             }
             x_end = (x_end < new Date(filter_data['end_date'])) ? x_end : new Date(filter_data['end_date']);
 
@@ -148,7 +146,6 @@
                 opacity: 0.65,
                 name: actor,
                 text: text,
-                hoveron: 'all',
                 hoverinfo: 'text',
                 legendgroup: actor,
                 showlegend: !unique_actors.has(actor),
