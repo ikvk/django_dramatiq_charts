@@ -52,9 +52,12 @@ Configuration
 
     from django_dramatiq_charts.views import load_chart, timeline_chart, clean_cache
 
-    path('django_dramatiq_charts/load_chart/', load_chart, name='ddc_load_chart'),
-    path('django_dramatiq_charts/timeline_chart/', timeline_chart, name='ddc_timeline_chart'),
-    path('django_dramatiq_charts/clean_cache/', clean_cache, name='ddc_clean_cache'),
+    urlpatterns = [
+        path('django_dramatiq_charts/load_chart/', load_chart, name='ddc_load_chart'),
+        path('django_dramatiq_charts/timeline_chart/', timeline_chart, name='ddc_timeline_chart'),
+        path('django_dramatiq_charts/clean_cache/', clean_cache, name='ddc_clean_cache'),
+        # ...
+    ]
 
 3. Configure lib parameters in your project settings file:
 
@@ -106,4 +109,10 @@ Thanks
 Thanks to all who helped develop this library:
 
 `MilkyCake <https://github.com/MilkyCake>`_,
+`lexa2907 <https://github.com/lexa2907>`_,
+`python <https://www.python.org/>`_,
+`django <https://www.djangoproject.com/>`_,
+`plotly <https://plotly.com/python/>`_,
+`jquery <https://jquery.com/>`_,
+`select2 <https://select2.org/>`_,
 `flaticon.com <https://www.flaticon.com/free-icons/bar-chart>`_
