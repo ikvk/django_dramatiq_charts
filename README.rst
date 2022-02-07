@@ -71,10 +71,10 @@ Configuration
      - users with access to the charts
      - def fn(request): return request.user.is_superuser
    * - DJANGO_DRAMATIQ_CHARTS_LOAD_QS_FILTER
-     - Custom queryset for load chart
+     - Additional queryset filter for load chart
      - None
    * - DJANGO_DRAMATIQ_CHARTS_TIMELINE_QS_FILTER
-     - Custom queryset for timeline chart
+     - Additional queryset filter for timeline chart
      - None
    * - DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_SEC
      - Minutes to cache choices of queue and actor form fields  (False-like to disable)
