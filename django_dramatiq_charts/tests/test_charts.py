@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+from django.db.models import Q
 from django_dramatiq.models import Task
 from django.test import TransactionTestCase, override_settings
 from django_dramatiq_charts.forms import DramatiqLoadChartForm, DramatiqTimelineChartForm
@@ -151,6 +152,19 @@ class TestDramatiqLoadChart(TransactionTestCase):
         self.assertEqual(5, len(json.loads(data['categories'])))
         self.assertIn('external_tasks', json.loads(data['categories']))
 
+    @override_settings(DJANGO_DRAMATIQ_CHARTS_LOAD_QS_FILTER=~Q(actor_name='specific_tasks'))
+    def test_qs_filter(self):
+        # load_chart_qs_filter
+        form = DramatiqLoadChartForm(data=dict(
+            start_date=datetime(2022, 1, 1, 1, 0, 0),
+            end_date=datetime(2022, 1, 1, 1, 1, 0),
+            time_interval=10,
+        ))
+        self.assertTrue(form.is_valid())
+        data = form.get_chart_data()
+        self.assertFalse(data['empty_qs'])
+        self.assertEqual(['sequential_tasks', 'parallel_tasks', 'different_status'], json.loads(data['categories']))
+
 
 @override_settings(DJANGO_DRAMATIQ_CHARTS_TIMELINE_QS_FILTER='')
 class TestDramatiqTimelineChart(TransactionTestCase):
@@ -264,3 +278,17 @@ class TestDramatiqTimelineChart(TransactionTestCase):
         chart_data = json.loads(data['chart_data'])
         self.assertEqual(28, len(chart_data))
         self.assertIn('external_tasks', {task['actor'] for task in chart_data})
+
+    @override_settings(DJANGO_DRAMATIQ_CHARTS_TIMELINE_QS_FILTER=~Q(actor_name='specific_tasks'))
+    def test_qs_filter(self):
+        # timeline_chart_qs_filter
+        form = DramatiqTimelineChartForm(data=dict(
+            start_date=datetime(2022, 1, 1, 1, 0, 0),
+            end_date=datetime(2022, 1, 1, 1, 1, 0),
+        ))
+        self.assertTrue(form.is_valid())
+        data = form.get_chart_data()
+        self.assertFalse(data['empty_qs'])
+        chart_data = json.loads(data['chart_data'])
+        self.assertEqual(['different_status', 'parallel_tasks', 'sequential_tasks'],
+                         sorted(list({task['actor'] for task in chart_data})))
