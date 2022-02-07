@@ -93,7 +93,7 @@ Timeline chart
 
 .. figure:: docs/timeline_chart.png
 
-If the task duration is less than a second, this task is depicted on the chart with a duration of 1 second.
+If the task duration is less than a second, this task is displayed on the chart with a duration of 1 second.
 
 Release notes
 -------------

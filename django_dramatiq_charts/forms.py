@@ -112,7 +112,7 @@ class BasicFilterForm(forms.Form):
 
 class DramatiqLoadChartForm(BasicFilterForm):
     time_interval = forms.IntegerField(
-        label='Interval sec', initial=10, min_value=1, max_value=60 * 60 * 24,
+        label='Interval, sec', initial=10, min_value=1, max_value=60 * 60 * 24,
         widget=forms.TextInput(attrs={'style': 'width: 2rem;', 'maxlength': '5'})
     )
     status = forms.MultipleChoiceField(label='Status', required=False,
