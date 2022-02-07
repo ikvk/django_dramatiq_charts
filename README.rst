@@ -59,7 +59,7 @@ Configuration
         # ...
     ]
 
-3. Configure lib parameters in your project settings file:
+3. Configure lib in your project settings file:
 
 .. list-table::
    :header-rows: 1
