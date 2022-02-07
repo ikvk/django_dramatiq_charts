@@ -2,12 +2,13 @@ import json
 from datetime import datetime
 
 from django_dramatiq.models import Task
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, override_settings
 from django_dramatiq_charts.forms import DramatiqLoadChartForm, DramatiqTimelineChartForm
 
 _fixture_dataset = 'fixtures/dataset.json'
 
 
+@override_settings(DJANGO_DRAMATIQ_CHARTS_LOAD_QS_FILTER='')
 class TestDramatiqLoadChart(TransactionTestCase):
     fixtures = [_fixture_dataset]
 
@@ -32,7 +33,7 @@ class TestDramatiqLoadChart(TransactionTestCase):
         self.assertFalse(data['empty_qs'])
 
         # chart height
-        self.assertEqual('300', data['chart_height'])
+        self.assertEqual('320', data['chart_height'])
 
         # categories
         self.assertEqual(['specific_tasks', 'sequential_tasks', 'parallel_tasks', 'different_status'],
@@ -151,6 +152,7 @@ class TestDramatiqLoadChart(TransactionTestCase):
         self.assertIn('external_tasks', json.loads(data['categories']))
 
 
+@override_settings(DJANGO_DRAMATIQ_CHARTS_TIMELINE_QS_FILTER='')
 class TestDramatiqTimelineChart(TransactionTestCase):
     fixtures = [_fixture_dataset]
 

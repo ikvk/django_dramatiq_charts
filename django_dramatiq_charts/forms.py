@@ -9,7 +9,7 @@ from django.core.cache import cache
 from django_dramatiq import models
 
 from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
-from .config import get_load_chart_qs, get_timeline_chart_qs, get_cache_form_data_sec
+from .config import get_load_chart_qs_filter, get_timeline_chart_qs_filter, get_cache_form_data_sec
 
 
 def get_actor_choices() -> ((str, str),):
@@ -132,15 +132,15 @@ class DramatiqLoadChartForm(BasicFilterForm):
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
         ).order_by('updated_at')
-        load_chart_qs = get_load_chart_qs()
+        load_chart_qs_filter = get_load_chart_qs_filter()
         if actors:
             task_qs = task_qs.filter(actor_name__in=actors)
         if queues:
             task_qs = task_qs.filter(queue_name__in=queues)
         if statuses:
             task_qs = task_qs.filter(status__in=statuses)
-        if load_chart_qs:
-            task_qs = task_qs.filter(load_chart_qs)
+        if load_chart_qs_filter:
+            task_qs = task_qs.filter(load_chart_qs_filter)
         if not task_qs.count():
             return {
                 'empty_qs': True,
@@ -191,7 +191,7 @@ class DramatiqLoadChartForm(BasicFilterForm):
             'categories': json.dumps(categories),
             'working_actors_count': json.dumps(working_actors_count),
             'dates': json.dumps(dates),
-            'chart_height': json.dumps(200 + len(categories) * 25),
+            'chart_height': json.dumps(200 + len(categories) * 30),
             'chart_title': self.get_title(),
             'empty_qs': False,
         }
@@ -214,15 +214,15 @@ class DramatiqTimelineChartForm(BasicFilterForm):
         task_qs = models.Task.tasks.filter(
             updated_at__gte=start_date, created_at__lte=end_date
         ).order_by('-created_at', '-updated_at')
-        timeline_chart_qs = get_timeline_chart_qs()
+        timeline_chart_qs_filter = get_timeline_chart_qs_filter()
         if actors:
             task_qs = task_qs.filter(actor_name__in=actors)
         if queues:
             task_qs = task_qs.filter(queue_name__in=queues)
         if statuses:
             task_qs = task_qs.filter(status__in=statuses)
-        if timeline_chart_qs:
-            task_qs = task_qs.filter(timeline_chart_qs)
+        if timeline_chart_qs_filter:
+            task_qs = task_qs.filter(timeline_chart_qs_filter)
         if not task_qs.count():
             return {
                 'chart_title': self.get_title(),

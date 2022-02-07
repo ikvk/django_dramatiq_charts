@@ -81,7 +81,7 @@
             running: 'rgb(72,139,222)',
             failed: 'rgb(239,77,50)',
             done: 'rgb(30,190,54)',
-            skipped: 'rgb(100, 100, 100)',
+            skipped: 'rgb(100,100,100)',
         };
 
         let chart_data = ({{ chart_data|safe|default:'[]' }});
@@ -107,17 +107,18 @@
                 `Duration: ${duration}<br>` +
                 `Start: ${task['start'].slice(0, -3)}<br>` +
                 `End: ${task['end'].slice(0, -3)}`;
+
+            // time interval correction
             let x_start = new Date(
                 (task['start'] > filter_data['start_date']) ? task['start'] : filter_data['start_date']
             );
             let x_end = new Date(task['end']);
-            // show momental as 1 sec when the duration is less than 1 sec
             if (task['duration'] < 1000) {
                 x_end = new Date(x_start.getTime() + 1000);
             }
             x_end = (x_end < new Date(filter_data['end_date'])) ? x_end : new Date(filter_data['end_date']);
 
-            // status frame
+            // status border
             data.push({
                 x: [x_start, x_start, x_start, x_end, x_end, x_end, x_start, x_start],
                 y: [y - 0.5, y, y + 0.5, y + 0.5, y, y - 0.5, y - 0.5, y],
@@ -145,7 +146,6 @@
                 opacity: 0.65,
                 name: actor,
                 text: text,
-                hoveron: 'all',
                 hoverinfo: 'text',
                 legendgroup: actor,
                 showlegend: !unique_actors.has(actor),
