@@ -186,6 +186,8 @@
                 title: {
                     text: `Actor <br>`,
                 },
+                itemclick: false,
+                itemdoubleclick: false,
             },
             hoverlabel: {
                 bgcolor: '#eaeaea',
@@ -211,6 +213,24 @@
                 cursor_obj.style.cursor = 'default';
             }).on('plotly_unhover', function () {
                 cursor_obj.style.cursor = '';
+            });
+
+            // changing the height of the chart when zooming
+            let tasks_number = y_time.length;
+            chart.on('plotly_relayout', function (eventdata) {
+                if (eventdata['yaxis.range[0]']) {
+                    // selected number of tasks
+                    let tasks_number_selected = (eventdata['yaxis.range[1]'] - eventdata['yaxis.range[0]'] - 1.5) / 3;
+
+                    if (tasks_number_selected !== tasks_number) {
+                        tasks_number = tasks_number_selected;
+                        // minimum chart height according to document height
+                        let height_min = document.documentElement.clientHeight * 0.88;
+                        Plotly.react(chart, data, Object.assign(
+                            {}, layout, {height: heightCalculator(tasks_number, 25, 300, height_min)}
+                        ));
+                    }
+                }
             });
         }
     </script>
