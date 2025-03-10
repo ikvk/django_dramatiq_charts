@@ -1,3 +1,8 @@
+0.3.0
+=====
+* Security update for redirect(request.META.get('HTTP_REFERER'))
+* Added DJANGO_DRAMATIQ_CHARTS_CLEAN_CACHE_REDIRECT_URL config arg
+
 0.2.0
 =====
 * rename DJANGO_DRAMATIQ_CHARTS_LOAD_CHART_QS to DJANGO_DRAMATIQ_CHARTS_LOAD_QS_FILTER

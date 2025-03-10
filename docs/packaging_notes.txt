@@ -10,14 +10,15 @@ https://packaging.python.org/tutorials/packaging-projects/
     https://docs.python.org/3/distutils/packageindex.html#pypirc
 
 2. Install/update build libs:
-    C:\python\venv\django_dramatiq_charts36\Scripts\pip install --upgrade -r C:\kvk\develop\Python\django_dramatiq_charts\docs\build-requirements.txt
+    C:\python\venv\django_dramatiq_charts311-32\Scripts\python.exe -m pip install --upgrade pip
+    C:\python\venv\django_dramatiq_charts311-32\Scripts\pip install --upgrade -r C:\kvk\develop\Python\django_dramatiq_charts\docs\build-requirements.txt
 
 3. Generating distribution archives
     cd C:\kvk\develop\Python\django_dramatiq_charts\
-    C:\python\venv\django_dramatiq_charts36\Scripts\python.exe C:\kvk\develop\Python\django_dramatiq_charts\setup.py sdist bdist_wheel
+    C:\python\venv\django_dramatiq_charts311-32\Scripts\python.exe C:\kvk\develop\Python\django_dramatiq_charts\setup.py sdist bdist_wheel
 
 4. Check the distribution archives:
-    C:\python\venv\django_dramatiq_charts36\Scripts\python.exe -m twine check dist/*
+    C:\python\venv\django_dramatiq_charts311-32\Scripts\python.exe -m twine check dist/*
 
 5. Uploading the distribution archives:
-    C:\python\venv\django_dramatiq_charts36\Scripts\python.exe -m twine upload dist/*
+    C:\python\venv\django_dramatiq_charts311-32\Scripts\python.exe -m twine upload dist/*

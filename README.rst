@@ -79,6 +79,9 @@ Configuration
    * - DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_SEC
      - Minutes to cache choices of queue and actor form fields  (False-like to disable)
      - 4 hours
+   * - DJANGO_DRAMATIQ_CHARTS_CLEAN_CACHE_REDIRECT_URL
+     - Url for redirect to after clean cache
+     - None
 
 Load chart
 ^^^^^^^^^^

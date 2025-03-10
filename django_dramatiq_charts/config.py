@@ -22,3 +22,7 @@ def get_timeline_chart_qs_filter() -> Optional[Q]:
 
 def get_cache_form_data_sec() -> int:
     return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_CACHE_FORM_DATA_SEC", 60 * 60 * 4)
+
+
+def get_clean_cache_redirect_url() -> int:
+    return getattr(settings, "DJANGO_DRAMATIQ_CHARTS_CLEAN_CACHE_REDIRECT_URL", None)
