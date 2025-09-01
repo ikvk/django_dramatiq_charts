@@ -1,3 +1,8 @@
+0.4.0
+=====
+* Update style
+* Improve django compatibility
+
 0.3.0
 =====
 * Security update for redirect(request.META.get('HTTP_REFERER'))

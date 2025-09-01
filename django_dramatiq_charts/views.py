@@ -3,7 +3,11 @@ from django.shortcuts import render, redirect
 from django.core.cache import cache
 from django.core.handlers.wsgi import WSGIRequest
 from django.conf import settings
-from django.utils.http import url_has_allowed_host_and_scheme
+
+try:
+    from django.utils.http import url_has_allowed_host_and_scheme
+except ImportError:
+    from django.utils.http import is_safe_url as url_has_allowed_host_and_scheme
 
 from .consts import CACHE_KEY_ACTOR_CHOICES, CACHE_KEY_QUEUE_CHOICES
 from .forms import DramatiqLoadChartForm, DramatiqTimelineChartForm

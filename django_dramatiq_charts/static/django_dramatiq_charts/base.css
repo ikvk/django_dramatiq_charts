@@ -1,6 +1,24 @@
+
+textarea, input[type=text], input[type=number], select, input[type=checkbox], button[type=submit],
+input[type=password], .select2-container .select2-selection--single, .select2-container .select2-selection--multiple {
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075)
+}
+
+.filter_form {
+    background-color: rgba(225, 225, 225, 0.1);
+    padding: 0.3em;
+    padding-top: 0.5em;
+    border-bottom: 1px dotted gray;
+    text-align: center;
+}
+
 body {
-    padding-right: 0.6em;
-    padding-left: 0.6em;
+    margin: 0;
+    padding: 0;
+}
+
+#chart {
+    margin-left: 0.6em;
 }
 
 button {
@@ -109,11 +127,6 @@ label {
 
 .text-center {
     text-align: center;
-}
-
-.filter_form {
-    text-align: center;
-    margin-bottom: 0.38em;
 }
 
 .status_color_label {

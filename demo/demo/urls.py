@@ -16,7 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django_dramatiq_charts.views import load_chart, timeline_chart, clean_cache
-from django.conf.urls import include, url
+try:
+    from django.conf.urls import include, url
+except ImportError:
+    from django.urls import re_path as url, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),

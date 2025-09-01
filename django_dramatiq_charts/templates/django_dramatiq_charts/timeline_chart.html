@@ -6,7 +6,7 @@
 
 {% block content %}
     <form method="GET" class="filter_form">
-        {{ form }}
+        {{ form.as_table }}
         <nobr>
             <button type="submit">Build chart</button>
             <a href="."><i>Reset</i></a>
