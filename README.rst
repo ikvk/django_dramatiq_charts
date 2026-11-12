@@ -119,3 +119,5 @@ Thanks to all who helped develop this library:
 `jquery <https://jquery.com/>`_,
 `select2 <https://select2.org/>`_,
 `flaticon.com <https://www.flaticon.com/free-icons/bar-chart>`_
+
+Star the project if it helps ⭐ !
